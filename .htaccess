@@ -1,0 +1,18 @@
+<IfModule mod_rewrite.c>	
+	Options -Indexes 
+	# Enrutamiento mediante htacces de apache		
+    RewriteEngine On			
+	
+	RewriteRule ^$ core/entrada.php/backend/backend/index$1 [L]
+	RewriteRule ^/$ core/entrada.php/backend/backend/index$1 [L]
+	
+	RewriteRule ^web/backend/images/(.*)$ web/modulos/backend/images/$1 [L]
+	
+	RewriteRule ^sistema$ core/entrada.php/backend/backend/index$1 [L]
+	RewriteRule ^sistema/$ core/entrada.php/backend/backend/index$1 [L]
+	
+	RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ core/entrada.php/$1 [L]
+	ErrorDocument 500 error500.html
+</IfModule>
