@@ -3,13 +3,14 @@
 	# Enrutamiento mediante htacces de apache		
     RewriteEngine On			
 	
-	RewriteRule ^$ core/entrada.php/backend/backend/index$1 [L]
-	RewriteRule ^/$ core/entrada.php/backend/backend/index$1 [L]
+	RewriteRule ^$ core/entrada.php/backend/backend/inicio$1 [L]
+	RewriteRule ^/$ core/entrada.php/backend/backend/inicio$1 [L]
 	
-	RewriteRule ^web/backend/images/(.*)$ web/modulos/backend/images/$1 [L]
+	RewriteRule ^web/backend/images/(.*)$ web/modulos/backend/images/$1 [L]	
 	
-	RewriteRule ^sistema$ core/entrada.php/backend/backend/index$1 [L]
-	RewriteRule ^sistema/$ core/entrada.php/backend/backend/index$1 [L]
+	
+	RewriteRule ^sistema$ core/entrada.php/portal/paginas/inicio$1 [L]
+	RewriteRule ^sistema/$ core/entrada.php/portal/paginas/inicio$1 [L]
 	
 	RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d

@@ -1,4 +1,4 @@
-﻿var Edicioncatalogos = function(){
+﻿var Edicionconfig = function(){
 	this.editado=false;
 	this.saveAndClose=false;
 	

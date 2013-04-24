@@ -1,4 +1,4 @@
-﻿var Busquedaseguridad=function(){
+﻿var Busquedausuarios=function(){
 	this.tituloNuevo='Nueva';
 	this.eliminar=function(){
 	
@@ -50,7 +50,7 @@
 	}
 	this.borrar=function(){
 		if (this.selected==undefined) return false;
-		var r=confirm("�Eliminar Elemento?");
+		var r=confirm("¿Eliminar Elemento?");
 		if (r==true){
 		  this.eliminar();
 		}
@@ -75,7 +75,7 @@
 		jTab.data('tabObj',this);		
 				
 		var jTab=$('a[href="'+tabId+'"]');		//// this.agregarClase('busqueda_'+this.controlador.nombre);
-	    jTab.html(this.catalogo.nombre);		 
+	    jTab.html('Usuarios');		 
 		 jTab.addClass('busqueda_'+this.controlador.nombre); 
 		//-------------------------------------------
 		$('div'+tabId).css('padding','0px 0 0 0');
@@ -102,7 +102,7 @@
 					break;
 					case 'eliminar':
 						if (me.selected==undefined) return false;
-						var r=confirm("?liminar?");
+						var r=confirm("¿Eliminar?");
 						if (r==true){
 						  me.eliminar();
 						}
@@ -150,6 +150,8 @@
 		});
 				
 		dataSource.reader.read= function (datasource) {						
+			// TabManager.add(kore.mod_url_base+'usuarios2/busqueda','Usuarios',1);
+			
 			var totalRows=datasource.data.totalRows;						
 			datasource.data = datasource.data.rows;
 			datasource.data.totalRows = totalRows;
@@ -170,11 +172,16 @@
 			columns: [ 
 			    // { dataKey: "id", hidden:true, visible:true, headerText: "ID" }						
 				
-{ dataKey: "id", visible:true, headerText: "Id" },
-{ dataKey: "fk_user", visible:true, headerText: "Fk_user" },
-{ dataKey: "modulo", visible:true, headerText: "Modulo" },
-{ dataKey: "controlador", visible:true, headerText: "Controlador" },
-{ dataKey: "accion", visible:true, headerText: "Accion" }
+{ dataKey: "id", visible:false, headerText: "Id" },
+{ dataKey: "nick", visible:true, headerText: "Usuario" },
+{ dataKey: "pass", visible:false, headerText: "Pass" },
+{ dataKey: "email", visible:true, headerText: "Email" },
+{ dataKey: "name", visible:true, headerText: "Nombre" },
+{ dataKey: "rol", visible:true, headerText: "Rol" },
+{ dataKey: "fbid", visible:false, headerText: "Fbid" },
+
+{ dataKey: "picture", visible:false, headerText: "Picture" },
+{ dataKey: "originalName", visible:false, headerText: "Originalname" }
 			]
 		});
 		

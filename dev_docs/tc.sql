@@ -10,59 +10,47 @@ Target Server Type    : MYSQL
 Target Server Version : 50508
 File Encoding         : 65001
 
-Date: 2013-04-01 16:07:43
+Date: 2013-04-23 19:18:33
 */
 
 SET FOREIGN_KEY_CHECKS=0;
 
 -- ----------------------------
--- Table structure for `inventario`
+-- Table structure for `cms_paginas`
 -- ----------------------------
-DROP TABLE IF EXISTS `inventario`;
-CREATE TABLE `inventario` (
+DROP TABLE IF EXISTS `cms_paginas`;
+CREATE TABLE `cms_paginas` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `producto` int(11) DEFAULT NULL,
-  `t20` int(11) DEFAULT NULL,
-  `t25` int(11) DEFAULT NULL,
-  `t30` int(11) DEFAULT NULL,
-  `t35` int(11) DEFAULT NULL,
-  `t40` int(11) DEFAULT NULL,
-  `t45` int(11) DEFAULT NULL,
-  `t50` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+  `texto_menu` char(255) DEFAULT NULL,
+  `contenido` blob NOT NULL,
+  `orden` int(11) unsigned DEFAULT NULL,
+  `codigo` varchar(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `codigo` (`codigo`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of inventario
+-- Records of cms_paginas
 -- ----------------------------
-INSERT INTO `inventario` VALUES ('1', '1', '0', '0', '0', '0', '0', '0', '0');
-INSERT INTO `inventario` VALUES ('2', '2', '0', '0', '0', '0', '0', '0', '0');
-INSERT INTO `inventario` VALUES ('3', '3', '0', '0', '0', '0', '0', '0', '0');
-INSERT INTO `inventario` VALUES ('4', '4', '0', '0', '0', '0', '0', '0', '0');
-INSERT INTO `inventario` VALUES ('5', '5', '0', '0', '0', '0', '0', '0', '0');
 
 -- ----------------------------
--- Table structure for `productos`
+-- Table structure for `system_acl`
 -- ----------------------------
-DROP TABLE IF EXISTS `productos`;
-CREATE TABLE `productos` (
+DROP TABLE IF EXISTS `system_acl`;
+CREATE TABLE `system_acl` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `nombre` char(255) DEFAULT NULL,
-  `codigo` char(20) DEFAULT NULL,
+  `fk_user` int(11) DEFAULT NULL,
+  `modulo` char(255) DEFAULT NULL,
+  `controlador` char(255) DEFAULT NULL,
+  `accion` char(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of productos
+-- Records of system_acl
 -- ----------------------------
-INSERT INTO `productos` VALUES ('1', 'tenis deportino Nike', 'nike-01');
-INSERT INTO `productos` VALUES ('2', 'Zapato de vestir Cafe', 'zap-ca');
-INSERT INTO `productos` VALUES ('3', 'Tenis 03', 'tenis 03');
-INSERT INTO `productos` VALUES ('5', 'sandalia 04', 'sand-04');
-INSERT INTO `productos` VALUES ('6', 'zapato 05', 'zapa 05');
-INSERT INTO `productos` VALUES ('30', 'tenis 06', '');
-INSERT INTO `productos` VALUES ('31', 'zapatilla 08', 'zap 08');
-INSERT INTO `productos` VALUES ('32', 'zapatilla 09', 'zapa 09');
+INSERT INTO `system_acl` VALUES ('2', '0', 'asdf', 'asdf', 'asfd');
+INSERT INTO `system_acl` VALUES ('3', '2', '', '', '');
 
 -- ----------------------------
 -- Table structure for `system_catalogos`
@@ -70,10 +58,12 @@ INSERT INTO `productos` VALUES ('32', 'zapatilla 09', 'zapa 09');
 DROP TABLE IF EXISTS `system_catalogos`;
 CREATE TABLE `system_catalogos` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `fk_modulo` int(11) DEFAULT NULL,
   `nombre` char(255) DEFAULT NULL,
   `controlador` char(255) DEFAULT NULL,
   `modelo` char(255) DEFAULT NULL,
   `tabla` char(255) DEFAULT NULL,
+  `pk_tabla` char(255) DEFAULT 'id',
   `icono` char(255) DEFAULT NULL,
   `titulo_nuevo` char(255) DEFAULT NULL,
   `titulo_edicion` char(255) DEFAULT NULL,
@@ -84,14 +74,55 @@ CREATE TABLE `system_catalogos` (
   `msg_eliminado` char(255) DEFAULT NULL,
   `msg_cambios` char(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of system_catalogos
 -- ----------------------------
-INSERT INTO `system_catalogos` VALUES ('8', 'Productos', 'productos', 'Producto', 'productos', '', 'Nuevo Producto', '{nombre}:{id}', 'Buscar Productos', 'Producto Creado ({nombre}:{id})', 'Producto Actualizado ({nombre}:{id})', 'Â¿Desea Eliminar el Producto: {nombre}:{id} ?', 'Producto <b> {nombre}:{id} </b> eliminado', 'Â¿Guardar Producto antes de salir?');
-INSERT INTO `system_catalogos` VALUES ('18', 'Usuarios', 'usuarios', 'Usuario', 'system_users', '', '', '', '', '', '', '', '', '');
-INSERT INTO `system_catalogos` VALUES ('27', 'Inventarios', 'Inventarios', 'Inventario', 'inventario', '', '', '', '', '', '', '', '', '');
+INSERT INTO `system_catalogos` VALUES ('18', '1', 'Usuarios', 'usuarios', 'Usuario', 'system_users', 'id', 'http://png.findicons.com/files/icons/1620/crystal_project/64/personal.png', '', '', '', '', '', '', '', '');
+INSERT INTO `system_catalogos` VALUES ('31', '1', 'Configuracion', 'config', 'config', 'system_config', 'id', 'http://png.findicons.com/files/icons/2645/super_mono_3d/64/super_mono_3d_part2_65.png', '', '', '', '', '', '', '', '');
+INSERT INTO `system_catalogos` VALUES ('32', '1', 'Modulos', 'modulos', 'Modulo', 'system_modulos', 'id', 'http://png.findicons.com/files/icons/1681/siena/48/puzzle_yellow.png', '', '', '', '', '', '', '', '');
+INSERT INTO `system_catalogos` VALUES ('33', '1', 'Catalogos', 'catalogos', 'Catalogo', 'system_catalogos', 'id', 'http://png.findicons.com/files/icons/577/refresh_cl/48/windows_view_icon.png', '', '', '', '', '', '', '', '');
+INSERT INTO `system_catalogos` VALUES ('36', '1', 'seguridad', 'seguridad', 'Seguridad', 'system_acl', 'id', 'http://png.findicons.com/files/icons/1035/human_o2/48/keepassx.png', '', '', '', '', '', '', '', '');
+INSERT INTO `system_catalogos` VALUES ('40', '2', 'Usuarios', 'usuarios2', 'usuario', 'system_users', 'id', 'http://png.findicons.com/files/icons/1620/crystal_project/64/personal.png', '', '', '', '', '', '', '', '');
+INSERT INTO `system_catalogos` VALUES ('41', '2', 'Paginas', 'paginas', 'pagina', 'cms_paginas', 'id', 'http://png.findicons.com/files/icons/2166/oxygen/48/message_news.png', '', '', '', '', '', '', '', '');
+
+-- ----------------------------
+-- Table structure for `system_config`
+-- ----------------------------
+DROP TABLE IF EXISTS `system_config`;
+CREATE TABLE `system_config` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `fk_user` int(11) DEFAULT NULL,
+  `tema` char(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of system_config
+-- ----------------------------
+INSERT INTO `system_config` VALUES ('1', '1', 'artic');
+INSERT INTO `system_config` VALUES ('2', '20', 'artic');
+
+-- ----------------------------
+-- Table structure for `system_modulos`
+-- ----------------------------
+DROP TABLE IF EXISTS `system_modulos`;
+CREATE TABLE `system_modulos` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nombre` char(255) DEFAULT NULL,
+  `icono` char(255) DEFAULT NULL,
+  `nombre_interno` char(255) DEFAULT NULL,
+  `ruta_base` char(255) DEFAULT NULL,
+  `orden` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of system_modulos
+-- ----------------------------
+INSERT INTO `system_modulos` VALUES ('1', 'Sistema', 'http://png.findicons.com/files/icons/1681/siena/48/puzzle_yellow.png', 'backend', '/modulos/', '0');
+INSERT INTO `system_modulos` VALUES ('2', 'Escrupulos', 'http://png-1.findicons.com/files/icons/2003/business/64/shopping_full.png', 'portal', '/', '0');
 
 -- ----------------------------
 -- Table structure for `system_users`
@@ -110,10 +141,9 @@ CREATE TABLE `system_users` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `nick` (`nick`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of system_users
 -- ----------------------------
-INSERT INTO `system_users` VALUES ('1', 'zesar1', 0xD6638655930D9F75EAD96027EC615F8D, 'cbibriesca@hotmail.com', '2', '0', 'Zesar X', 'pic_1.jpg', 'retro_blue_background.jpg');
-INSERT INTO `system_users` VALUES ('21', 'omar', 0xD6638655930D9F75EAD96027EC615F8D, 'omar@gmail.com', '1', '0', '', '', '');
+INSERT INTO `system_users` VALUES ('1', 'zesar1', 0x59D2B23DD4281CADAF04B78D614A0EEB, 'cbibriesca@hotmail.com', '1', '0', 'Zesar X', 'pic_1.jpg', 'retro_blue_background.jpg');

@@ -1,4 +1,4 @@
-﻿var Busquedaseguridad=function(){
+﻿var Busquedaconfig=function(){
 	this.tituloNuevo='Nueva';
 	this.eliminar=function(){
 	
@@ -172,9 +172,7 @@
 				
 { dataKey: "id", visible:true, headerText: "Id" },
 { dataKey: "fk_user", visible:true, headerText: "Fk_user" },
-{ dataKey: "modulo", visible:true, headerText: "Modulo" },
-{ dataKey: "controlador", visible:true, headerText: "Controlador" },
-{ dataKey: "accion", visible:true, headerText: "Accion" }
+{ dataKey: "tema", visible:true, headerText: "Tema" }
 			]
 		});
 		

@@ -1,4 +1,4 @@
-﻿var Edicioncatalogos = function(){
+﻿var Edicionusuarios = function(){
 	this.editado=false;
 	this.saveAndClose=false;
 	
@@ -95,16 +95,18 @@
 	}
 	this.actualizarTitulo=function(){
 		var tabId = this.tabId;		
-		var id = $(tabId + ' .txtId').val();		
+		var id = $(tabId + ' [name="id"]').val();		
 		if (id>0){
+			var user=$(tabId+' [name="nick"]').val();
 			
+			$('a[href="'+tabId+'"]').html(user);
 		}else{
-			// $('a[href="'+tabId+'"]').html('Nuevo');
+		  $('a[href="'+tabId+'"]').html('Nuevo Usr');
 		}
 	}
 	this.nuevo=function(){
 		var tabId=this.tabId;
-		var tab = $('#tabs '+tabId);
+		var tab = $('#tabs '+tabId);		
 		$('a[href="'+tabId+'"]').html('Nuevo');
 		tab.find('.txtId').val(0);
 		me.editado=false;
@@ -211,10 +213,10 @@
 				var msg= (resp.msg)? resp.msg : '';
 				var title;
 				if ( resp.success == true	){					
-					icon=kore.url_base+'/web/'+kore.modulo+'/images/yes.png';
+					icon=kore.url_base+'web/'+kore.modulo+'/images/yes.png';
 					title= 'Success';									
 				}else{
-					icon= kore.url_base+'/web/'+kore.modulo+'/images/error.png';
+					icon= kore.url_base+'web/'+kore.modulo+'/images/error.png';
 					title= 'Error';
 				}
 				
@@ -245,6 +247,7 @@
 	this.configurarFormulario=function(tabId){		
 		var me=this;
 		$(this.tabId+' input[type="text"]').wijtextbox();		
+		$(this.tabId+' input[type="password"]').wijtextbox();		
 		$(this.tabId+' textarea').wijtextbox();		
 	
 		
