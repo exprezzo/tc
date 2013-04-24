@@ -21,11 +21,13 @@
 		};				
 		 var editor=new Edicionusuarios();
 		 editor.init(config);		
+		 
+		 $('#'+config.tab.id + ' [name="rol"]').wijcombobox();
 	});
 </script>
 
 	<div class="pnlIzq">
-		<?php 	
+		<?php 				
 			global $_PETICION;
 			$this->mostrar('/backend/componentes/toolbar');	
 			if (!isset($this->datos)){		
@@ -39,27 +41,35 @@
 				<label style="">Usuario:</label>
 				<input type="text" name="nick" class="txt_nick" value="<?php echo $this->datos['nick']; ?>" style="width:500px;" />
 			</div>
-<div class="inputBox" style="margin-bottom:8px;display:block;margin-left:10px;width:100%;"  >
-	<label style="">Pass:</label>
-	<input type="password" name="pass" class="txt_pass" value="<?php echo $this->datos['pass']; ?>" style="width:500px;" />
-</div>
-<div class="inputBox" style="margin-bottom:8px;display:block;margin-left:10px;width:100%;"  >
-	<label style="">Email:</label>
-	<input type="text" name="email" class="txt_email" value="<?php echo $this->datos['email']; ?>" style="width:500px;" />
-</div>
-
-<!--div class="inputBox" style="margin-bottom:8px;display:block;margin-left:10px;width:100%;"  >
-	<label style="">Fbid:</label>
-	<input type="text" name="fbid" class="txt_fbid" value="<?php // echo $this->datos['fbid']; ?>" style="width:500px;" />
-</div-->
-<div class="inputBox" style="margin-bottom:8px;display:block;margin-left:10px;width:100%;"  >
-	<label style="">Nombre:</label>
-	<input type="text" name="name" class="txt_name" value="<?php echo $this->datos['name']; ?>" style="width:500px;" />
-</div>
-<div class="inputBox" style="margin-bottom:8px;display:block;margin-left:10px;width:100%;"  >
-	<label style="">Rol:</label>
-	<input type="text" name="rol" class="txt_rol" value="<?php echo $this->datos['rol']; ?>" style="width:500px;" />
-</div>
+			<div class="inputBox" style="margin-bottom:8px;display:block;margin-left:10px;width:100%;"  >
+				<label style="">Pass:</label>
+				<input type="password" name="pass" class="txt_pass" value="<?php echo $this->datos['pass']; ?>" style="width:500px;" />
+			</div>
+			<div class="inputBox" style="margin-bottom:8px;display:block;margin-left:10px;width:100%;"  >
+				<label style="">Email:</label>
+				<input type="text" name="email" class="txt_email" value="<?php echo $this->datos['email']; ?>" style="width:500px;" />
+			</div>
+			<!--div class="inputBox" style="margin-bottom:8px;display:block;margin-left:10px;width:100%;"  >
+				<label style="">Fbid:</label>
+				<input type="text" name="fbid" class="txt_fbid" value="<?php // echo $this->datos['fbid']; ?>" style="width:500px;" />
+			</div-->
+			<div class="inputBox" style="margin-bottom:8px;display:block;margin-left:10px;width:100%;"  >
+				<label style="">Nombre:</label>
+				<input type="text" name="name" class="txt_name" value="<?php echo $this->datos['name']; ?>" style="width:500px;" />
+			</div>
+			<div class="inputBox" style="margin-bottom:8px;display:block;margin-left:10px;width:100%;"  >
+				<label style="">Rol:</label>
+				<select name="rol" class="txt_rol">
+					<?php
+						$rolId = $this->datos['rol'];						
+						foreach($this->roles as $rol){
+							if ( $rol['id'] == $rolId ) $selected='selected';
+							echo '<option '.$selected.' value="'.$rol['id'].'">'.$rol['rol'].'</option>';
+							$selected='';
+						}
+					?>
+				</select>
+			</div>
 <!--div class="inputBox" style="margin-bottom:8px;display:block;margin-left:10px;width:100%;"  >
 	<label style="">Picture:</label>
 	<input type="text" name="picture" class="txt_picture" value="<?php // echo $this->datos['picture']; ?>" style="width:500px;" />

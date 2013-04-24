@@ -15,6 +15,6 @@ if ( !isset( $APP_CONFIG ) ) {
 }
 
 
-$_LOGIN_REDIRECT_PATH = 'sistema';
+$_LOGIN_REDIRECT_PATH = 'paginas/inicio';
 $_DEFAULT_CONTROLLER='paginas';
 ?>

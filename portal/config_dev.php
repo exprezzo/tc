@@ -1,9 +1,9 @@
 <?php
 $DB_CONFIG=array(
 	'DB_SERVER'	=>'mysql.nixiweb.com',
-	'DB_NAME'	=>'u672516699_escrupu',
-	'DB_USER'	=>'u672516699_escru',
-	'DB_PASS'	=>'q99nNJJDXE',
+	'DB_NAME'	=>'u705515576_escrupul',
+	'DB_USER'	=>'u705515576_escru',
+	'DB_PASS'	=>'BFEwwZvu6J',
 	'PASS_AES'  =>'tc94s43s'
 );
 	

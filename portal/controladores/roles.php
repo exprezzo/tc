@@ -1,10 +1,10 @@
 <?php
-require_once $APPS_PATH.$_PETICION->modulo.'/modelos/pagina_modelo.php';
-class paginas extends Controlador{
-	var $modelo="pagina";
-	var $campos=array('id','texto_menu','contenido','orden','codigo');
+require_once $APPS_PATH.$_PETICION->modulo.'/modelos/rol_modelo.php';
+class roles extends Controlador{
+	var $modelo="rol";
+	var $campos=array('id','rol');
 	var $pk="id";
-	var $nombre="paginas";
+	var $nombre="roles";
 	
 	function nuevo(){		
 		$campos=$this->campos;
@@ -15,7 +15,9 @@ class paginas extends Controlador{
 		$vista->datos=$obj;		
 		
 		global $_PETICION;
-		$vista->mostrar('/'.$_PETICION->controlador.'/edicion');		
+		$vista->mostrar('/'.$_PETICION->controlador.'/edicion');
+		
+		
 	}
 	
 	function guardar(){

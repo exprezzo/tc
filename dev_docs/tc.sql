@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50508
 File Encoding         : 65001
 
-Date: 2013-04-23 19:18:33
+Date: 2013-04-24 15:14:23
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -27,7 +27,7 @@ CREATE TABLE `cms_paginas` (
   `codigo` varchar(20) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `codigo` (`codigo`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of cms_paginas
@@ -74,7 +74,7 @@ CREATE TABLE `system_catalogos` (
   `msg_eliminado` char(255) DEFAULT NULL,
   `msg_cambios` char(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of system_catalogos
@@ -86,6 +86,7 @@ INSERT INTO `system_catalogos` VALUES ('33', '1', 'Catalogos', 'catalogos', 'Cat
 INSERT INTO `system_catalogos` VALUES ('36', '1', 'seguridad', 'seguridad', 'Seguridad', 'system_acl', 'id', 'http://png.findicons.com/files/icons/1035/human_o2/48/keepassx.png', '', '', '', '', '', '', '', '');
 INSERT INTO `system_catalogos` VALUES ('40', '2', 'Usuarios', 'usuarios2', 'usuario', 'system_users', 'id', 'http://png.findicons.com/files/icons/1620/crystal_project/64/personal.png', '', '', '', '', '', '', '', '');
 INSERT INTO `system_catalogos` VALUES ('41', '2', 'Paginas', 'paginas', 'pagina', 'cms_paginas', 'id', 'http://png.findicons.com/files/icons/2166/oxygen/48/message_news.png', '', '', '', '', '', '', '', '');
+INSERT INTO `system_catalogos` VALUES ('42', '2', 'Roles', 'roles', 'rol', 'system_rol', 'id', '', '', '', '', '', '', '', '', '');
 
 -- ----------------------------
 -- Table structure for `system_config`
@@ -116,13 +117,30 @@ CREATE TABLE `system_modulos` (
   `ruta_base` char(255) DEFAULT NULL,
   `orden` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of system_modulos
 -- ----------------------------
 INSERT INTO `system_modulos` VALUES ('1', 'Sistema', 'http://png.findicons.com/files/icons/1681/siena/48/puzzle_yellow.png', 'backend', '/modulos/', '0');
 INSERT INTO `system_modulos` VALUES ('2', 'Escrupulos', 'http://png-1.findicons.com/files/icons/2003/business/64/shopping_full.png', 'portal', '/', '0');
+
+-- ----------------------------
+-- Table structure for `system_rol`
+-- ----------------------------
+DROP TABLE IF EXISTS `system_rol`;
+CREATE TABLE `system_rol` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `rol` char(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of system_rol
+-- ----------------------------
+INSERT INTO `system_rol` VALUES ('1', 'Admin');
+INSERT INTO `system_rol` VALUES ('2', 'Almacen');
+INSERT INTO `system_rol` VALUES ('3', 'Gerente');
 
 -- ----------------------------
 -- Table structure for `system_users`
@@ -141,9 +159,10 @@ CREATE TABLE `system_users` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `nick` (`nick`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of system_users
 -- ----------------------------
-INSERT INTO `system_users` VALUES ('1', 'zesar1', 0x59D2B23DD4281CADAF04B78D614A0EEB, 'cbibriesca@hotmail.com', '1', '0', 'Zesar X', 'pic_1.jpg', 'retro_blue_background.jpg');
+INSERT INTO `system_users` VALUES ('1', 'zesar1', 0x59D2B23DD4281CADAF04B78D614A0EEB, 'cbibriesca@hotmail.com', '1', '0', 'Zesar Octavio', 'pic_1.jpg', 'retro_blue_background.jpg');
+INSERT INTO `system_users` VALUES ('22', 'luis', 0x59D2B23DD4281CADAF04B78D614A0EEB, 'luis@email.com', '2', null, '', null, null);

@@ -3,7 +3,48 @@ class usuarioModelo extends Modelo{
 	var $tabla="system_users";
 	var $campos=array('id','nick','pass','email','rol','fbid','name','picture','originalName');
 	var $pk="id";
+	function login($username, $pass){
+		//si el username es un email, se busca por email y pass
+		//si no, se busca por username y pass
+
+		global $DB_CONFIG;
+		$_PASS_AES=$DB_CONFIG['PASS_AES'];
+				
+		if ( filter_var($username, FILTER_VALIDATE_EMAIL) ) {
+			$sql = 'SELECT * FROM '.$this->tabla.' WHERE email=:username and :pass=AES_DECRYPT(pass, "'.$_PASS_AES.'")';
+		}else{
+			$sql = 'SELECT * FROM '.$this->tabla.' WHERE nick=:username and :pass=AES_DECRYPT(pass, "'.$_PASS_AES.'")';
+		}									
+		
+		$con = $this->getPdo();
+		$sth = $con->prepare($sql);		
+		$sth->bindValue(':username',$username, PDO::PARAM_STR);
+		$sth->bindValue(':pass',$pass, PDO::PARAM_STR);
+		
+		$sth->execute();
+		$modelos = $sth->fetchAll(PDO::FETCH_ASSOC);
+		
+		if ( empty($modelos) ){
+			return array('success'=>false);
+		}
+		
+		if ( sizeof($modelos) > 1 ){
+			throw new Exception("El usuario está duplicado"); //TODO: agregar numero de error, crear una exception MiEscepcion
+		}
+		
+		$this->registrarEnSesion($modelos[0]);
+		$_SESSION['logoutUrl'] = '/users/logout';		
+		return array(
+			'success'=>true,
+			'datos'=>$modelos[0]
+		);		
+	}
 	
+		function registrarEnSesion($userInfo){
+		$_SESSION['isLoged']=true;
+		$_SESSION['userInfo']=$userInfo;
+
+	}
 	function logout(){
 		unset($_SESSION['isLoged']);
 		unset($_SESSION['userInfo']);	
