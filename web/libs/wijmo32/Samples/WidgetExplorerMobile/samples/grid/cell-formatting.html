@@ -1,0 +1,90 @@
+<div data-role="appviewpage" data-title="Cell formatting">
+	<style type="text/css">
+		.wijmo-wijgrid
+		{
+			min-height: 100px;
+		}
+	</style>
+
+	<div data-role="content">
+		<table id="demo"></table>
+	</div>
+
+	<script type="text/javascript">
+		$(document).one("wijappviewpageinit", function() {
+
+			$("#demo").wijgrid({
+				allowPaging: true,
+				pageSize: 4,
+
+				data: new wijdatasource({
+					proxy: new wijhttpproxy({
+						url: "http://odata.netflix.com/Catalog/Titles",
+						dataType: "jsonp",
+						jsonp: "$callback",
+						data: {
+							$format: "json",
+							$inlinecount: "allpages",
+							$skip: 0,
+							$top: 10
+						},
+						key: "d"
+					}),
+					reader: {
+						read: function (dataSource) {
+							dataSource.data = dataSource.data.results;
+							new wijarrayreader([
+								{ name: "Name", mapping: "Name" },
+								{ name: "ReleaseYear", mapping: "ReleaseYear" },
+								{ name: "Rating", mapping: "AverageRating" },
+								{ name: "Synopsis", mapping: "ShortSynopsis" },
+								{ name: "Cover", mapping: function (item) { return item.BoxArt.SmallUrl; } }]
+							).read(dataSource);
+						}
+					}
+				}),
+
+				columns: [
+					{}, // Name
+					{}, // ReleaseYear
+					{ // Rating
+						cellFormatter: function (args) {
+							if (args.row.type & $.wijmo.wijgrid.rowType.data) {
+								args.$container.closest("td").attr("title", args.row.data.Rating);
+
+								var color = "#FF0000"; // red
+								if (args.row.data.Rating > 3) {
+									color = args.row.data.Rating < 4
+										? "#FFFF00" // yellow
+										: "#00FF00"; // green
+								}
+
+								$("<div />")
+									.height(16)
+									.width(args.row.data.Rating * 20 + "%")
+									.css("background-color", color)
+									.appendTo(args.$container);
+
+								return true;
+							}
+						}
+					},
+					{}, // Synopsis
+					{ // Cover
+						cellFormatter: function (args) {
+							if (args.row.type & $.wijmo.wijgrid.rowType.data) {
+								args.$container
+									.css("text-align", "center")
+									.empty()
+									.append($("<img />")
+									.attr("src", args.row.data.Cover));
+
+								return true;
+							}
+						}
+					}
+				]
+			});
+		});
+	</script>
+</div>

@@ -9,8 +9,10 @@ function iniciarLinkTabs(){
 		
 		link.attr('tablink',false);
 		link.addClass('link');
+		
+		var titulo=link.attr('titulo');
 		link.click(function(){
-			TabManager.add(destino,'Cargando...');
+			TabManager.add(destino,titulo,0);
 		});
 	});
 }

@@ -1,0 +1,159 @@
+﻿<!DOCTYPE html>
+<html ng-app="wijmo">
+<head>
+    <title>ComponentOne Invexplorer - Wijmo/jQueryUI/TypeScript/Angular sample</title>
+
+    <!-- turn off IE's 'compatibility mode' to ensure HTML5 compatibility -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- jQuery/jQueryUI/Angular (angular after jQuery) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript" ></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js" type="text/javascript" ></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.2/angular.min.js" type="text/javascript" ></script>
+
+    <!-- Wijmo -->
+    <link href="http://cdn.wijmo.com/themes/cobalt/jquery-wijmo.css" type="text/css" rel="stylesheet" title="metro-jqueryui" />
+    <link href="http://cdn.wijmo.com/jquery.wijmo-complete.all.2.3.0.min.css" type="text/css" rel="stylesheet" />
+    <script src="http://cdn.wijmo.com/jquery.wijmo-open.all.2.3.0.min.js" type="text/javascript" ></script>
+    <script src="http://cdn.wijmo.com/jquery.wijmo-complete.all.2.3.0.min.js" type="text/javascript" ></script>
+
+    <!-- Wijmo-Angular -->
+    <script src="http://cdn.wijmo.com/external/angular.wijmo.js" type="text/javascript" ></script>
+
+    <!-- ViewModel -->
+    <script src="scripts/view-model.js" type="text/javascript"></script>
+    <script src="scripts/portfolio.js" type="text/javascript"></script>
+    <script src="scripts/portfolioItem.js" type="text/javascript"></script>
+    <script src="scripts/company.js" type="text/javascript"></script>
+
+    <!-- controller -->
+    <script src="components/controller.js" type="text/javascript"></script>
+
+    <script type="text/javascript">
+
+        // initialize application on page load
+        $(function () {
+
+            // configure auto-complete control to render html instead of plain text
+            // http://stackoverflow.com/questions/3488016/using-html-in-jquery-ui-autocomplete
+            $("#autoComplete").data("autocomplete")._renderItem = function (ul, item) {
+                return $("<li></li>")
+                        .data("item.autocomplete", item)
+                        .append("<a>" + item.label + "</a>")
+                        .appendTo(ul);
+            };
+        });
+
+    </script>
+
+    <!-- our styles (override jQueryUI) -->
+    <link href="styles/style.css" rel="stylesheet" type="text/css" />
+</head>
+<body ng-controller="Controller">
+
+    <h1>
+        <img class="middle" src="resources/InvExplorerLogo.png" />
+        ComponentOne Invexplorer / AngularJS
+    </h1>
+
+    <p>
+        This application was implemented using
+        <a href="http://angularjs.org/"><b>AngularJS</b></a> (Google's application framework), 
+        <a href="http://www.typescriptlang.org"><b>TypeScript</b></a> (typed, error-checked JavaScript), 
+        <a href="http://jqueryui.com"><b>jQueryUI</b></a> (auto-complete control used to select new symbols),
+        <a href="http://wijmo.com"><b>ComponentOne Wijmo</b></a> (chart control), and
+        <a href="http://www.google.com/finance"><b>Google Finance</b></a> (inspiration).</p>
+    <p>
+        The data displayed is obtained from <a href="http://finance.yahoo.com">Yahoo finance</a> services.
+        Yahoo services are not free; they are being used here for demonstration purposes only.</p>
+    <p>
+        We recommend using this application in Chrome (IE9 does not show the style colors correctly).</p>
+    <!-- portfolio table -->
+    <table>
+        <thead>
+            <tr>
+                <th class="left">Name</th>
+                <th class="left">Symbol</th>
+                <th class="left">Chart</th>
+                <th class="right">Last Price</th>
+                <th class="right">Change</th>
+                <th class="right">Change %</th>
+                <th class="right">Shares</th>
+                <th class="right">Unit Cost</th>
+                <th class="right">Value</th>
+                <th class="right">Gain</th>
+                <th class="right">Gain %</th>
+                <th class="center">Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="item in ViewModel.portfolio.items" 
+                style="background:{{item.getRowColor()}}" >
+                <td>
+                    <span style="background:{{item.getColor()}}">&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;
+                    <span>{{item.company.name}}</span>
+                </td>
+                <td>{{item.symbol}}</td>
+                <td class="center"><input type="checkbox" ng-model="item.chart" ng-click="item.chartChanged()"/></td>
+                <td class="right">{{item.lastPrice | number:2 }}</td>
+                <td class="right" style="color:{{item.getAmountColor(item.change)}}">{{item.change | number:2 }}</td>
+                <td class="right" style="color:{{item.getAmountColor(item.change)}}">{{item.getChangePercent() | number:2 }}</td>
+                <td><input class="numeric" ng-model="item.shares" /></td>
+                <td><input class="numeric" ng-model="item.unitCost" /></td>
+                <td class="right">{{item.getValue() | number:2 }}</td>
+                <td class="right" style="color:{{item.getAmountColor(item.getGain())}}">{{item.getGain() | number:2 }}</td>
+                <td class="right" style="color:{{item.getAmountColor(item.getGain())}}">{{item.getGainPercent() | number:2 }}</td>
+                <td class="center"><a class="hlink" ng-click="item.remove()">x</a></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- add symbol -->
+    <div class="addSymbol">
+        Add Symbol: 
+
+        <!-- jQueryUI autocomplete -->
+        <jquiAutocomplete id="autoComplete" minLength="2" 
+            source="{{ViewModel.autoCompleteSource}}" 
+            close="{{ViewModel.autoCompleteClose}}" 
+            value="{{ViewModel.portfolio.newSymbol}}">
+        </jquiAutocomplete>
+        
+        <!-- add the selected symbol to the portfolio -->
+        <button ng-click="ViewModel.portfolio.addNewSymbol()" ng-disabled="ViewModel.portfolio.canAddNewSymbol == false">
+            Add to Portfolio
+        </button>
+
+        <!-- progress indicator (visible when ViewModel.updating > 0) -->
+        <span class="floatRight" ng-show="ViewModel.updating > 0">
+            <i> getting data...</i>
+        </span>
+    </div>
+
+    <!-- links to select time span to be charted -->
+    <div ng-show="ViewModel.chartVisible">
+        <a class="hlink" ng-click="ViewModel.setMinDate(6)">6m</a> 
+        <a class="hlink" ng-click="ViewModel.setMinDate(0)">YTD</a> 
+        <a class="hlink" ng-click="ViewModel.setMinDate(12)">1y</a> 
+        <a class="hlink" ng-click="ViewModel.setMinDate(24)">2y</a> 
+        <a class="hlink" ng-click="ViewModel.setMinDate(36)">3y</a> 
+        <a class="hlink" ng-click="ViewModel.setMinDate(1000)">All</a> 
+    </div>
+
+    <!-- portfolio chart -->
+    <wijlinechart
+        seriesList="{{ViewModel.chartSeries}}"
+        seriesStyles="{{ViewModel.chartStyles}}"
+        seriesHoverStyles="{{ViewModel.chartHoverStyles}}"
+        showchartlabels="false"
+        width="800" height="250" >
+        <animation enabled="false"></animation>
+        <seriesTransition enabled="false"></seriesTransition>
+        <legend visible="false" ></legend>
+        <axis>
+            <x annoFormatString="dd-MMM-yy"></x>
+            <y annoFormatString="p0"></x>
+        </axis>
+    </wijlinechart>
+</body>
+</html>

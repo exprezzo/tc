@@ -10,7 +10,6 @@ if ( !isset($_SESSION['isLoged'])|| $_SESSION['isLoged']!=true ){
 	<title><?php echo $APP_CONFIG['nombre']; ?></title>
 	<!--jQuery References-->
 	
-	
 	<script src="<?php echo $_APP_PATH; ?>web/libs/jquery-1.8.3.js"></script>
 	<script src="<?php echo $_APP_PATH; ?>web/libs/jquery-ui-1.9.2.custom/jquery-ui-1.9.2.custom.js"></script>  
 	
@@ -169,8 +168,8 @@ if ( !isset($_SESSION['isLoged'])|| $_SESSION['isLoged']!=true ){
 			ajustarTab(); //Ajusta la altura al tamaño en relacion al tamaño de la pantalla
 			iniciarLinkTabs(); //A los objetos con atributo linkTab=true,  se les agrega comportamiento ajax para abrir tabs.
 			
-			 TabManager.add(kore.mod_url_base+'usuarios2/busqueda','Usuarios',1);
-			  TabManager.add(kore.mod_url_base+'paginas/reportes','Reportes',1);
+			TabManager.add(kore.mod_url_base+'usuarios2/busqueda','Usuarios',1);
+			TabManager.add(kore.mod_url_base+'paginas/reportes','Reportes',1);
 			 
 			
 			$(window).resize( function() {
@@ -254,16 +253,12 @@ if ( !isset($_SESSION['isLoged'])|| $_SESSION['isLoged']!=true ){
 			<div style="padding:10px; display: inline-block;position: absolute;right: 0;top: 0;">
 				<div style="padding-right: 5px; display: inline-block;color:white;"><?php print_r( $_SESSION['userInfo']['name'] ); ?></div>
 				<div style="display: inline-block; color:white;" class=" link-salir" ><a onclick="salir()" href="#" style="color:white;" >Salir</a></div>			
-			</div>
-			
+			</div>			
 		</div>
-		
-		
+				
 		<div id="tabs">
 			 <ul>			
 			</ul>		
-		</div>	
-		
-		
+		</div>					
 </body>
 </html>

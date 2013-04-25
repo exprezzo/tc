@@ -1,0 +1,71 @@
+<div data-role="appviewpage" data-title="External Datasource">
+    <div data-role="content">
+        <div id="wijbarchart" data-role="wijbarchart" style="width: 100%; height: 400px">
+        </div>
+		<script type="text/javascript">
+		$(document).one("wijappviewpageinit", function () { 
+			var netflx = "http://odata.netflix.com/Catalog/Genres('Horror Movies')/Titles?$inlinecount=allpages&$callback=callback&$top=10&$format=json&$orderby=AverageRating desc";
+
+            $.ajax({
+                dataType: "jsonp",
+                url: netflx,
+                jsonpCallback: "callback",
+                success: callback
+            });
+		});
+
+		function callback(result) {
+            // unwrap result
+            var names = [];
+            var ratings = [];
+
+            var movies = result["d"]["results"];
+
+            for (var i = 0; i < movies.length; i++) {
+
+                names.push(movies[i].Name);
+                ratings.push(movies[i].AverageRating);
+            }
+			$("#wijbarchart").wijbarchart("beginUpdate");
+            $("#wijbarchart").wijbarchart({
+                axis: {
+                    y: {
+                        text: "Average Rating",
+                        min: 0,
+                        max: 5,
+                        autoMin: false,
+                        autoMax: false
+                    },
+                    x: {
+                        text: ""
+                    }
+                },
+                hint: {
+                    content: function () {
+                        return this.data.label + '\n ' + this.y + '';
+                    }
+                },
+                header: {
+                    text: "Top 10 Movies by Genre - Netflix OData"
+                },
+                seriesList: [
+                    {
+                        label: "Horror",
+                        legendEntry: true,
+                        fitType: "spline",
+                        data: {
+                            x: names,
+                            y: ratings
+                        },
+                        markers: {
+                            visible: true,
+                            type: "circle"
+                        }
+                    }
+                ]
+            });
+			$("#wijbarchart").wijbarchart("endUpdate");
+        }
+	</script>
+    </div>
+</div>
