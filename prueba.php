@@ -1,5 +1,5 @@
 <?php phpinfo(); 
-	echo 'pruebas con git';
+	echo 'pruebas con git hub error';
 
 ?>
 
