@@ -1,10 +1,20 @@
 <?php
 
 require_once $APPS_PATH.$_PETICION->modulo.'/vistas/reportes/reporte_no_vendidos_pdf.php';
+require_once $APPS_PATH.$_PETICION->modulo.'/modelos/tienda_modelo.php';
 
 class Reportes extends Controlador{
 	
-	
+	function novendidos(){
+		
+		$tiendaMod = new TiendaModelo();
+		$res  =$tiendaMod->buscar( array() );		
+		
+		$vista=$this->getVista();
+		$vista->tiendas = $res['datos'];
+		$vista->mostrar();
+		
+	}
 	function novendidosPdf(){
 		$mod=new Modelo();
 		$pdo=$mod->getPdo();
@@ -14,7 +24,8 @@ class Reportes extends Controlador{
 		$exito=$sth->execute();
 		if ( !$exito ){
 			$error= $mod->getError( $sth );
-			echo json_encode( $error );
+			echo json_encode(
+			$error );
 			return $error;
 		}		
 		$datos=$sth->fetchAll( PDO::FETCH_ASSOC);
