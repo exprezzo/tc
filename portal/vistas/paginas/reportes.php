@@ -3,22 +3,39 @@
 		iniciarLinkTabs();
 	});
 </script>
-<div style="padding:10px;">
+<style>
+.menuReportes a{
+	text-decoration:none;
+	display:inline-block;
+	text-align:center;
+	padding:42px;
+}
+
+.menuReportes a div{
+	display:block;
+}
+.menuReportes{
+	text-align:center;
+}
+
+</style>
+<div style="padding:10px;" class="menuReportes">
 	<h1>Reportes</h1>
-	<a tablink="true" href="/reportes/primero" titulo="primer reporte">
-		<img  src="http://png.findicons.com/files/icons/165/playground/128/shoe.png">
+	<!--a tablink="true" href="/reportes/vendidos" titulo="Vendidos">
+		<img src="http://png.findicons.com/files/icons/2389/web_icon_pack/65/bluestyle_09_star.png">		 
+		<div>Vendidos</div>
 	</a>
-	<a tablink="true" href="/reportes/segundo" titulo="segundo reporte">
-		<img src="http://png.findicons.com/files/icons/650/chanel/128/chanel_pink_shoe.png">
-	</a>
-	<a tablink="true" href="/reportes/tercero" titulo="tercero reporte">
-		<img src="http://png.findicons.com/files/icons/650/chanel/128/shanel_white_shoe.png">
-	</a>
-	<a tablink="true" href="/reportes/cuarto" titulo="cuarto reporte">
-		<img src="http://png.findicons.com/files/icons/649/gucci/128/gucci_shoe.png">
-	</a>
-	<a tablink="true" href="/reportes/quinto" titulo="quinto reporte">
-		<img src="http://png.findicons.com/files/icons/650/chanel/128/chanel_pink_shoe.png">
+	<a tablink="true" href="/reportes/top20" titulo="Top 20">
+		<img src="http://png.findicons.com/files/icons/2389/web_icon_pack/65/greenstyle_09_star.png">		 
+		<div>Top 20</div>
+	</a>	
+	<a tablink="true" href="/reportes/ultimos20" titulo="Ultimos 20">
+		<img src="http://png.findicons.com/files/icons/2389/web_icon_pack/65/redstyle_09_star.png">		 
+		<div>Ultimos 20</div>
+	</a-->
+	<a tablink="true" href="/reportes/novendidos" titulo="No Vendidos">
+		<img src="http://png.findicons.com/files/icons/2389/web_icon_pack/65/blackstyle_09_star.png">		          
+		<div>No vendidos</div>
 	</a>
 </div>
 

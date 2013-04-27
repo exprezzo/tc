@@ -1,6 +1,6 @@
 <?php
 require_once $APPS_PATH.$_PETICION->modulo.'/modelos/pagina_modelo.php';
-require_once $APPS_PATH.$_PETICION->modulo.'/vistas/paginas/primer_reporte_pdf.php';
+
 
 class paginas extends Controlador{
 	var $modelo="pagina";
