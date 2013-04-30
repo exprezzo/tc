@@ -42,28 +42,34 @@ class ReporteTop20Pdf extends fpdf{
 	
 	function imprimir(){
 		
-		$this->columns=array(			
-			array(		
+		$this->columns=array(
+			array(
+				'header'=>'Tienda',
+				'dataIndex'=>'tienda',
+				'w'=>100,
+				'groupInfo'=>array()
+			),
+			array(
 				'header'=>'Modelo',
 				'dataIndex'=>'modelo',
 				'width'=>40
 			),
-			array(		
+			array(
 				'header'=>'Clave',
 				'dataIndex'=>'clavesecundaria',
 				'width'=>40
-			),
-			array(		
+				),
+			array(
 				'header'=>'Cantidad',
 				'dataIndex'=>'cantidad',
 				'width'=>40
-			),			
-			array(		
+			),
+			array(
 				'header'=>'Descripcion',
 				'dataIndex'=>'nombre',
 				'width'=>60
 			),
-			array(		
+			array(
 				'header'=>'Importe',
 				'dataIndex'=>'importe',
 				'width'=>20,
@@ -71,7 +77,7 @@ class ReporteTop20Pdf extends fpdf{
 			)
 		);
 		
-		$this->AddPage();		
+		$this->AddPage();
 		$this->BasicTable();
 		
 		$this->SetFont('Courier','',13);

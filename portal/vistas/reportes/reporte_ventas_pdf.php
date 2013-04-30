@@ -4,9 +4,32 @@ require_once '../php_libs/fpdf/fpdf.php';
 class ReporteVentasPdf extends fpdf{
 	// Tabla simple
 	function BasicTable()
-	{		
-		// Cabecera
+	{				
+		$tw=0;
+		
+		$idxAgrupados=-1;
+		for($i=0; $i<sizeof($this->columns); $i++ ){
+			$col=$this->columns[$i];
+			
+			if ( isset($col['groupInfo']) ){
+				$idxAgrupados=$i;
+			}else{
+				$tw+=empty( $col['width'] ) ? 40 : $col['width'];
+			}			
+		}
+		
+		// if ($idxAgrupados>-1){
+			// $this->SetFont('Courier','',12);
+			// $this->Cell($tw,7,$this->columns[$idxAgrupados]['header'] ,1);
+			// $this->ln();
+		// }
+		
+		
+		
+		// Cabecera		
 		foreach($this->columns as $col){
+			// if ( isset($col['groupInfo']) ) continue;
+			
 			$this->SetFont('Courier','',12);
 			$w=empty( $col['width'] ) ? 40 : $col['width'];
 			$this->Cell($w,7,$col['header'],1);
@@ -40,18 +63,38 @@ class ReporteVentasPdf extends fpdf{
 	
 	function imprimir(){
 		
-		$this->columns=array(
+		$this->columns=array(			
 			array(		
-				'header'=>'Clave',
-				'dataIndex'=>'clavesecundaria',
+				'header'=>'Tienda',
+				'dataIndex'=>'nombreTienda',
 				'w'=>100,
 				'groupInfo'=>array()
 			),
 			array(		
+				'header'=>'Modelo',
+				'dataIndex'=>'modelo',
+				'width'=>40
+			),
+			array(		
+				'header'=>'Clave',
+				'dataIndex'=>'clavesecundaria',
+				'width'=>20
+			),
+			array(		
 				'header'=>'Cantidad',
 				'dataIndex'=>'cantidad',
-				'w'=>100,
-				'groupInfo'=>array()
+				'width'=>40
+			),			
+			array(		
+				'header'=>'Descripcion',
+				'dataIndex'=>'descripcion',
+				'width'=>60
+			),
+			array(		
+				'header'=>'Importe',
+				'dataIndex'=>'importe',
+				'width'=>20,
+				'align'=>'R'
 			)
 		);
 		

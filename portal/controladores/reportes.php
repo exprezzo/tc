@@ -40,12 +40,41 @@ class Reportes extends Controlador{
 		$vista->mostrar();
 	}
 	function vendidosPdf(){	
+		$sql='SELECT t.tienda as nombreTienda,
+		"modelo" as modelo, a.clavesecundaria, tkd.cantidad,tkd.descripcion, (tkd.cantidad * tkd.precioiva) as  importe
+		FROM tick_int tk
+		LEFT JOIN tick_det tkd ON tkd.clave = tk.clave  
+		LEFT JOIN tiendas t ON t.clave = tk.tienda
+		LEFT JOIN articulos2 a ON a.clave = tkd.primario
+		WHERE tk.fecha >=:fechai AND tk.fecha <= :fechaf
+		limit 0, 500
+		ORDER BY tk.fecha DESC';
+		$modelo=new Modelo();
+		$pdo=$modelo->getPdo();		
+		$sth=$pdo->prepare($sql);
+
+		$fechai=$_REQUEST['fechai'];
+		$fechaf=$_REQUEST['fechaf'];
+		
+		
+		$sth->bindValue(':fechai', $fechai ,PDO::PARAM_STR);
+		$sth->bindValue(':fechaf', $fechaf ,PDO::PARAM_STR);
+		
+		$exito=$sth->execute();
+		
+		if (  !$exito ) {
+			$res=$modelo->getError( $sth );
+			// print_r( $res );
+			exit;
+		}
+		
 		$res=array(
 			'success'=>true,
-			'datos'=>array(),
-			'total'=>0
-		);	
+			'datos'=> $sth->fetchAll(PDO::FETCH_ASSOC),			
+		);
 	
+		// print_r($res); exit;
+		
 		$pdf=new ReporteVentasPdf();
 		$pdf->res = $res;
 		

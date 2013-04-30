@@ -6,8 +6,11 @@
 	RewriteRule ^web/backend/images/(.*)$ web/modulos/backend/images/$1 [L]	
 	
 	
+	RewriteRule ^backend$ core/entrada.php/backend/backend/inicio$1 [L]
+	RewriteRule ^backend/$ core/entrada.php/backend/backend/inicio$1 [L]
+	
 	RewriteRule ^login$ core/entrada.php/portal/usuarios2/login$1 [L]
-	RewriteRule ^login/$ core/entrada.php/portal/usuarios2/login$1 [L]
+	RewriteRule ^login/$ core/entrada.php/portal/usuarios2/login$1 [L]		
 	
 	RewriteRule ^portal/usuarios/(.*)$ core/entrada.php/portal/usuarios2/$1 [L]
 	
