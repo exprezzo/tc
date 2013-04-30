@@ -169,7 +169,7 @@ if ( !isset($_SESSION['isLoged'])|| $_SESSION['isLoged']!=true ){
 			iniciarLinkTabs(); //A los objetos con atributo linkTab=true,  se les agrega comportamiento ajax para abrir tabs.
 			
 			// TabManager.add(kore.mod_url_base+'usuarios2/busqueda','Usuarios',1);
-			TabManager.add(kore.mod_url_base+'paginas/reportes','Reportes',1);
+			TabManager.add(kore.mod_url_base+'reportes/menu','Reportes',1);
 			 
 			
 			$(window).resize( function() {
@@ -244,7 +244,9 @@ if ( !isset($_SESSION['isLoged'])|| $_SESSION['isLoged']!=true ){
 		}
 		
 		ul.ui-tabs-nav li a.tab_usuarios2, .busqueda_usuarios2{ background-image:url("http://png.findicons.com/files/icons/1620/crystal_project/64/personal.png"); } 
-		
+		body{
+			background-color:black;
+		}
 	</style>	
 </head>
 <body style="padding:0; margin:0;" class="" >	
@@ -257,7 +259,7 @@ if ( !isset($_SESSION['isLoged'])|| $_SESSION['isLoged']!=true ){
 		</div>
 				
 		<div id="tabs">
-			 <ul>			
+			<ul>			
 			</ul>		
 		</div>					
 </body>

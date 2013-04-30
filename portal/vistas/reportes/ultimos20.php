@@ -1,1 +1,66 @@
-ULTIMOS 20
+<script>			
+	$( function(){		
+		var tabid='#<?php echo $_REQUEST['tabId']; ?>';
+			 
+		$(tabid + ' [name="fechai"]').wijinputdate({showTrigger:true,dateFormat:'dd/MM/yyyy' });
+		$(tabid + ' [name="fechaf"]').wijinputdate({showTrigger:true,dateFormat:'dd/MM/yyyy' });
+		$(tabid + ' [name="tienda"]').wijcombobox();
+		
+		$(tabid + ' .refresh').button().click(function(){
+			var fechai=$(tabid + ' [name="fechai"]').val();
+			var fechaf=$(tabid + ' [name="fechaf"]').val();
+			var tienda=$(tabid + ' [name="tienda"]').val();			
+			var agrupar=$(tabid +' [name="agrupar"]').prop('checked');
+			var url='/reportes/ultimos20Pdf?fechai='+fechai+'&fechaf='+fechaf+'&tienda='+tienda+'&agrupar='+agrupar;			
+			$(tabid+' .pdfReader').attr('data',url);
+			//http://stackoverflow.com/questions/10366867/object-tag-doesnt-refresh-when-its-data-attribute-is-changed-in-chrome
+			$(tabid+' .pdfReader').load(url);
+		});		
+	});
+</script>
+<style>
+.inputBox{
+	display:inline-block !important;
+}
+.tiendas [role="combobox"]{
+	top:10px;
+}
+</style>
+<div class="ui-widget-header" style="text-align:center;">
+	<div  style="display:inline-block; margin-right:20px;">	
+		<div class="inputBox" style="margin-bottom:8px;display:block;margin-left:10px;"  >
+			<label style="">Fecha Inicio:</label>
+			<input type="text" name="fechai" class="txt_fechai" value="<?php //echo $this->datos['name']; ?>" style=";" />
+		</div>
+		<div class="inputBox" style="margin-bottom:8px;display:block;margin-left:10px;"  >
+			<label style="">Fecha Fin:</label>
+			<input type="text" name="fechaf" class="txt_fechaf" value="<?php //echo $this->datos['name']; ?>" style="" />
+		</div>
+		<div class="inputBox tiendas" style="margin-bottom:8px;display:block;margin-left:10px;"  >
+			<label style="">Tienda:</label>
+			<select name="tienda" class="txt_tienda" style="top:10px;">				
+				<?php
+					echo '<option value="0" selected>TODAS</option>';
+					// $rolId = $this->datos['rol'];						
+					foreach($this->tiendas as $obj){					
+						echo '<option  value="'.$obj['clave'].'">'.$obj['tienda'].'</option>';					
+					}
+				?>
+			</select>
+		</div>
+		<div class="inputBox " style="margin-bottom:8px;display:block;margin-left:10px;"  >
+			<label>Agrupar</label><input type="checkbox" name="agrupar" > 
+		</div>
+		
+
+		
+		<div class="inputBox" style="margin-bottom:8px;display:block;margin-left:10px;"  >
+			<input class="refresh" type="submit" value="Ver reporte" />
+		</div>
+	</div>
+<div>
+<div>
+	<object class="pdfReader" data="" type="application/pdf" width="100%" height="93%">
+		alt : <a href="#"></a>
+	</object>
+</div>

@@ -1,7 +1,7 @@
 <?php
 require_once '../php_libs/fpdf/fpdf.php';
 
-class ReporteNoVendidosPdf extends fpdf{
+class ReporteUltimos20Pdf extends fpdf{
 	// Tabla simple
 	function BasicTable()
 	{		
@@ -34,9 +34,9 @@ class ReporteNoVendidosPdf extends fpdf{
 	function Header()
 	{
 		$this->SetFont('Courier','',16);
-		$this->Cell(40,10,'Mercancia que no se movió en el siguiente periodo:',0,1);
+		$this->Cell(40,10,'QUE SE VENDE MENOS',0,1);
 		$this->SetFont('Courier','',13);
-		$this->Cell(40,10,'Fecha Ini - Fecha Fin');
+		$this->Cell(40,10,'Totalizado por modelo y fecha');
 		$this->Ln();
 	}
 	
@@ -44,24 +44,28 @@ class ReporteNoVendidosPdf extends fpdf{
 		
 		$this->columns=array(			
 			array(		
+				'header'=>'Modelo',
+				'dataIndex'=>'modelo',
+				'width'=>40
+			),
+			array(		
 				'header'=>'Clave',
 				'dataIndex'=>'clavesecundaria',
 				'width'=>40
 			),
 			array(		
-				'header'=>'Precio',
-				'dataIndex'=>'precio1',
-				'width'=>20,
-				'align'=>'R'
-			),
+				'header'=>'Cantidad',
+				'dataIndex'=>'cantidad',
+				'width'=>40
+			),			
 			array(		
 				'header'=>'Descripcion',
 				'dataIndex'=>'nombre',
-				'width'=>100
+				'width'=>60
 			),
 			array(		
-				'header'=>'Talla',
-				'dataIndex'=>'talla',
+				'header'=>'Importe',
+				'dataIndex'=>'importe',
 				'width'=>20,
 				'align'=>'R'
 			)
@@ -70,7 +74,9 @@ class ReporteNoVendidosPdf extends fpdf{
 		$this->AddPage();		
 		$this->BasicTable();
 		
-			
+		$this->SetFont('Courier','',13);
+		$this->Cell(40,10,'Total');
+		$this->Cell(40,10,'Importe');
 		
 		$this->output();
 	}

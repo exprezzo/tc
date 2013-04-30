@@ -3,17 +3,29 @@ require_once '../php_libs/fpdf/fpdf.php';
 
 class ReporteVentasPdf extends fpdf{
 	// Tabla simple
-	function BasicTable($header, $data)
-	{
+	function BasicTable()
+	{		
 		// Cabecera
-		foreach($header as $col)
-			$this->Cell(40,7,$col,1);
+		foreach($this->columns as $col){
+			$this->SetFont('Courier','',12);
+			$w=empty( $col['width'] ) ? 40 : $col['width'];
+			$this->Cell($w,7,$col['header'],1);
+		}
+					
 		$this->Ln();
 		// Datos
-		foreach($data as $row)
-		{
-			foreach($row as $col)
-				$this->Cell(40,6,$col,1);
+		foreach($this->res['datos'] as $row)
+		 {
+			foreach($this->columns as $col){
+				$w=empty( $col['width'] ) ? 40 : $col['width'];
+				$di=$col['dataIndex'];
+				$val=$row[$di];
+				$this->SetFont('Courier','',12);
+				$align=empty( $col['align'] ) ? '' : $col['align'];
+				
+				$this->Cell($w,6,$val,1,0,$align);
+			}
+				
 			$this->Ln();
 		}
 	}
@@ -21,9 +33,9 @@ class ReporteVentasPdf extends fpdf{
 
 	function Header()
 	{
-		$this->SetFont('Arial','B',16);
+		$this->SetFont('Courier','',16);
 		$this->Cell(40,10,'QUE SE VENDE MAS EN TODAS LAS TIENDAS',0,1);
-		$this->Cell(40,10,'Totalizado por Modelo ');
+		$this->Cell(40,10,'Totalizado por Modelo ',0,1);
 	}
 	
 	function imprimir(){
@@ -31,13 +43,13 @@ class ReporteVentasPdf extends fpdf{
 		$this->columns=array(
 			array(		
 				'header'=>'Clave',
-				'dataIndex'=>'clavesecundaria'
+				'dataIndex'=>'clavesecundaria',
 				'w'=>100,
 				'groupInfo'=>array()
 			),
 			array(		
 				'header'=>'Cantidad',
-				'dataIndex'=>'cantidad'
+				'dataIndex'=>'cantidad',
 				'w'=>100,
 				'groupInfo'=>array()
 			)
@@ -45,11 +57,8 @@ class ReporteVentasPdf extends fpdf{
 		
 		
 		$this->AddPage();			
-		$foreach($this->res['datos'] as $info ){
-			$this->SetFont('Arial','B',16);
-			$this->Cell(40,10,'QUE SE VENDE MAS EN TODAS LAS TIENDAS',0,1);
-			$this->Cell(40,10,'Totalizado por Modelo ');
-		}
+		$this->BasicTable($this->columns, $this->res['datos'] );
+		
 		$this->output();
 	}
 	
@@ -60,7 +69,7 @@ class ReporteVentasPdf extends fpdf{
 		// Arial italic 8
 		$this->SetFont('Arial','I',8);
 		// Número de página
-		$this->Cell(0,10,'Page '.$this->PageNo().'/{nb}',0,0,'C');
+		$this->Cell(0,10,'Page '.$this->PageNo().'',0,0,'C');
 	}
 }
 ?>
