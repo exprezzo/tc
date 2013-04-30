@@ -46,25 +46,24 @@ class Reportes extends Controlador{
 		LEFT JOIN tick_det tkd ON tkd.clave = tk.clave  
 		LEFT JOIN tiendas t ON t.clave = tk.tienda
 		LEFT JOIN articulos2 a ON a.clave = tkd.primario
-		WHERE tk.fecha >=:fechai AND tk.fecha <= :fechaf
-		limit 0, 500
-		ORDER BY tk.fecha DESC';
+		WHERE tk.fecha >=:fechai AND tk.fecha <= :fechaf		
+		ORDER BY tk.fecha DESC limit 0, 1000';
 		$modelo=new Modelo();
 		$pdo=$modelo->getPdo();		
 		$sth=$pdo->prepare($sql);
 
-		$fechai=$_REQUEST['fechai'];
-		$fechaf=$_REQUEST['fechaf'];
+		$fechai=DateTime::createFromFormat ( 'd/m/Y' , $_REQUEST['fechai'] );
+		$fechaf=DateTime::createFromFormat ( 'd/m/Y' , $_REQUEST['fechaf'] );
+			
 		
-		
-		$sth->bindValue(':fechai', $fechai ,PDO::PARAM_STR);
-		$sth->bindValue(':fechaf', $fechaf ,PDO::PARAM_STR);
+		$sth->bindValue(':fechai', $fechai->format('Y-m-d') ,PDO::PARAM_STR);
+		$sth->bindValue(':fechaf', $fechaf->format('Y-m-d') ,PDO::PARAM_STR);
 		
 		$exito=$sth->execute();
 		
 		if (  !$exito ) {
 			$res=$modelo->getError( $sth );
-			// print_r( $res );
+			print_r( $res );
 			exit;
 		}
 		
@@ -193,7 +192,7 @@ class Reportes extends Controlador{
 			'total'=>$total
 		);	
 	
-		$pdf=new ReporteNoVendidosPdf();
+		$pdf=new ReporteNoVendidosPdf('L');
 		$pdf->res = $res;
 		
 		$pdf->imprimir();

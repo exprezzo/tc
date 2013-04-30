@@ -3,6 +3,10 @@ require_once '../php_libs/fpdf/fpdf.php';
 
 class ReporteVentasPdf extends fpdf{
 	// Tabla simple
+	function __construct() {
+       parent::__construct('L');
+       // print "In SubClass constructor\n";
+   }
 	function BasicTable()
 	{				
 		$tw=0;
@@ -67,23 +71,23 @@ class ReporteVentasPdf extends fpdf{
 			array(		
 				'header'=>'Tienda',
 				'dataIndex'=>'nombreTienda',
-				'w'=>100,
+				'width'=>20,
 				'groupInfo'=>array()
 			),
 			array(		
 				'header'=>'Modelo',
 				'dataIndex'=>'modelo',
-				'width'=>40
+				'width'=>20
 			),
 			array(		
 				'header'=>'Clave',
 				'dataIndex'=>'clavesecundaria',
-				'width'=>20
+				'width'=>30
 			),
 			array(		
 				'header'=>'Cantidad',
 				'dataIndex'=>'cantidad',
-				'width'=>40
+				'width'=>30
 			),			
 			array(		
 				'header'=>'Descripcion',
