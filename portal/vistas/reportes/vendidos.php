@@ -14,8 +14,7 @@
 			var agrupar=$(tabid +' [name="agrupar"]').prop('checked');
 			
 			var url='/';
-			$(tabid+' .pdfReader').attr('data',url);
-			//http://stackoverflow.com/questions/10366867/object-tag-doesnt-refresh-when-its-data-attribute-is-changed-in-chrome
+			$(tabid+' .pdfReader').attr('data',url);			
 			$(tabid+' .pdfReader').load(url);
 			
 			url='/reportes/vendidosPdf?fechai='+fechai+'&fechaf='+fechaf+'&tienda='+tienda+'&agrupar='+agrupar;			

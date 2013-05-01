@@ -113,40 +113,97 @@ class Reportes extends Controlador{
 		}
 		
 		
-		$sql='SELECT  t.tienda as nombreTienda,
-		"modelo" as modelo, a.clavesecundaria, sum(tkd.cantidad) as cantidad,tkd.descripcion, 
-		(tkd.cantidad * SUM(tkd.precioiva) ) as  importe
-		FROM tick_int tk
-		LEFT JOIN tick_det tkd ON tkd.clave = tk.clave  AND tkd.tienda = tk.tienda
-		LEFT JOIN tiendas t ON t.clave = tk.tienda
-		LEFT JOIN articulos2 a ON a.clave = tkd.primario				
-		WHERE '.$filtroTienda.' tk.fecha >= "'.$fechai->format('Y-m-d').'" and tk.fecha <= "'.$fechaf->format('Y-m-d').'"
-		GROUP BY a.grupo ORDER BY ';
-		
-		if ( $agrupar ){
-			$orden=' tk.tienda ASC, cantidad ASC';
-		}else{
-			$orden=' cantidad ASC';
-		}
-		$sql.=$orden;
-		
-		$sql.=' LIMIT 0,20;';
-		 
-		 
-		$modelo=new Modelo();
-		$pdo=$modelo->getPdo();						
-		$sth = $pdo->query( $sql );
+			$modelo=new Modelo();
+			$pdo=$modelo->getPdo();						
+		if($agrupar){
+			if ( !empty($tienda) ){
+				$paramsTienda=array(
+					'filtros'=>array(
+						array(
+							'filterOperator'=>'equals',
+							'dataKey'=>'clave',
+							'filterValue'=>$tienda
+						)
+					)				
+				);
+			}else{
+				$paramsTienda=array();
+			}
+			
+			
+			$tiendaMod=new TiendaModelo();
+			$tiendasRes=$tiendaMod->buscar( $paramsTienda );
+			
+			$tiendas=$tiendasRes['datos'];
+			$resultados=array();
+			
+			
+			
+			foreach($tiendas as $tiendaObj){
+				$tiendaId=$tiendaObj['clave'];
+				$filtroTienda=' tk.tienda="'.$tiendaId.'" AND ';
 				
-		if ( !$sth ) {
-			$res=$modelo->getError(  );
-			print_r( $res );
-			exit;
+				$sql='SELECT  t.tienda as nombreTienda,
+				"modelo" as modelo, a.clavesecundaria, sum(tkd.cantidad) as cantidad,tkd.descripcion, 
+				(tkd.cantidad * SUM(tkd.precioiva) ) as  importe
+				FROM tick_int tk
+				LEFT JOIN tick_det tkd ON tkd.clave = tk.clave  AND tkd.tienda = tk.tienda
+				LEFT JOIN tiendas t ON t.clave = tk.tienda
+				LEFT JOIN articulos2 a ON a.clave = tkd.primario				
+				WHERE '.$filtroTienda.' tk.fecha >= "'.$fechai->format('Y-m-d').'" and tk.fecha <= "'.$fechaf->format('Y-m-d').'"
+				GROUP BY a.grupo ORDER BY cantidad ASC limit 0,20';
+				
+				// echo $sql; exit;
+				$sth = $pdo->query( $sql );
+					
+				
+				if ( !$sth ) {
+					$res=$modelo->getError(  );
+					print_r( $res );
+					exit;
+				}
+				
+				$datos=$sth->fetchAll(PDO::FETCH_ASSOC);
+				$resultados=array_merge($datos, $resultados);
+			}
+			$res=array(
+				'success'=>true,
+				'datos'=>$resultados
+			);
+		}else{
+			$sql='SELECT  t.tienda as nombreTienda,
+			"modelo" as modelo, a.clavesecundaria, sum(tkd.cantidad) as cantidad,tkd.descripcion, 
+			(tkd.cantidad * SUM(tkd.precioiva) ) as  importe
+			FROM tick_int tk
+			LEFT JOIN tick_det tkd ON tkd.clave = tk.clave  AND tkd.tienda = tk.tienda
+			LEFT JOIN tiendas t ON t.clave = tk.tienda
+			LEFT JOIN articulos2 a ON a.clave = tkd.primario				
+			WHERE '.$filtroTienda.' tk.fecha >= "'.$fechai->format('Y-m-d').'" and tk.fecha <= "'.$fechaf->format('Y-m-d').'"
+			GROUP BY a.grupo ORDER BY ';
+			
+			if ( $agrupar ){
+				$orden=' tk.tienda ASC, cantidad ASC';
+			}else{
+				$orden=' cantidad ASC';
+			}
+			$sql.=$orden;
+			
+			$sql.=' LIMIT 0,20;';
+			 
+			 
+			$sth = $pdo->query( $sql );
+					
+			if ( !$sth ) {
+				$res=$modelo->getError(  );
+				print_r( $res );
+				exit;
+			}
+			
+			$res=array(
+				'success'=>true,
+				'datos'=> $sth->fetchAll(PDO::FETCH_ASSOC),			
+			);	
 		}
-		
-		$res=array(
-			'success'=>true,
-			'datos'=> $sth->fetchAll(PDO::FETCH_ASSOC),			
-		);	
 		
 		$pdf=new ReporteUltimos20Pdf();
 		
@@ -167,49 +224,111 @@ class Reportes extends Controlador{
 		$agrupar = ($_REQUEST['agrupar'] =='true') ? true: false;
 		$tienda = $_REQUEST['tienda'];		
 		
+		$modelo=new Modelo();
+		$pdo=$modelo->getPdo();						
+			
 		if ( !empty($tienda) ){
 			$filtroTienda = ' tk.tienda= '.$tienda.' AND ';
 		}else{
 			$filtroTienda = ' ';
 		}
 		
-		
-		$sql='SELECT  t.tienda as nombreTienda,
-		"modelo" as modelo, a.clavesecundaria, sum(tkd.cantidad) as cantidad,tkd.descripcion, 
-		(tkd.cantidad * SUM(tkd.precioiva) ) as  importe
-		FROM tick_int tk
-		LEFT JOIN tick_det tkd ON tkd.clave = tk.clave  AND tkd.tienda = tk.tienda
-		LEFT JOIN tiendas t ON t.clave = tk.tienda
-		LEFT JOIN articulos2 a ON a.clave = tkd.primario				
-		WHERE '.$filtroTienda.' tk.fecha >= "'.$fechai->format('Y-m-d').'" and tk.fecha <= "'.$fechaf->format('Y-m-d').'"
-		GROUP BY a.grupo ORDER BY ';
-		
-		
-		
-		if ( $agrupar ){
-			$orden=' tk.tienda ASC, cantidad DESC';
-		}else{
-			$orden=' cantidad DESC';
-		}
-		$sql.=$orden;
-		
-		$sql.=' LIMIT 0,20;';
-		 
-		 
-		$modelo=new Modelo();
-		$pdo=$modelo->getPdo();						
-		$sth = $pdo->query( $sql );
+		if($agrupar){
+			if ( !empty($tienda) ){
+				$paramsTienda=array(
+					'filtros'=>array(
+						array(
+							'filterOperator'=>'equals',
+							'dataKey'=>'clave',
+							'filterValue'=>$tienda
+						)
+					)				
+				);
+			}else{
+				$paramsTienda=array();
+			}
+			
+			
+			$tiendaMod=new TiendaModelo();
+			$tiendasRes=$tiendaMod->buscar( $paramsTienda );
+			
+			$tiendas=$tiendasRes['datos'];
+			$resultados=array();
+			
+			
+			
+			foreach($tiendas as $tiendaObj){
+				$tiendaId=$tiendaObj['clave'];
+				$filtroTienda=' tk.tienda="'.$tiendaId.'" AND ';
 				
-		if ( !$sth ) {
-			$res=$modelo->getError(  );
-			print_r( $res );
-			exit;
+				$sql='SELECT  t.tienda as nombreTienda,
+				"modelo" as modelo, a.clavesecundaria, sum(tkd.cantidad) as cantidad,tkd.descripcion, 
+				(tkd.cantidad * SUM(tkd.precioiva) ) as  importe
+				FROM tick_int tk
+				LEFT JOIN tick_det tkd ON tkd.clave = tk.clave  AND tkd.tienda = tk.tienda
+				LEFT JOIN tiendas t ON t.clave = tk.tienda
+				LEFT JOIN articulos2 a ON a.clave = tkd.primario				
+				WHERE '.$filtroTienda.' tk.fecha >= "'.$fechai->format('Y-m-d').'" and tk.fecha <= "'.$fechaf->format('Y-m-d').'"
+				GROUP BY a.grupo ORDER BY cantidad DESC limit 0,20';
+				
+				// echo $sql; exit;
+				$sth = $pdo->query( $sql );
+					
+				
+				if ( !$sth ) {
+					$res=$modelo->getError(  );
+					print_r( $res );
+					exit;
+				}
+				
+				$datos=$sth->fetchAll(PDO::FETCH_ASSOC);
+				$resultados=array_merge($datos, $resultados);
+			}
+			$res=array(
+				'success'=>true,
+				'datos'=>$resultados
+			);
+		}else{
+			$sql='SELECT  t.tienda as nombreTienda,
+			"modelo" as modelo, a.clavesecundaria, sum(tkd.cantidad) as cantidad,tkd.descripcion, 
+			(tkd.cantidad * SUM(tkd.precioiva) ) as  importe
+			FROM tick_int tk
+			LEFT JOIN tick_det tkd ON tkd.clave = tk.clave  AND tkd.tienda = tk.tienda
+			LEFT JOIN tiendas t ON t.clave = tk.tienda
+			LEFT JOIN articulos2 a ON a.clave = tkd.primario				
+			WHERE '.$filtroTienda.' tk.fecha >= "'.$fechai->format('Y-m-d').'" and tk.fecha <= "'.$fechaf->format('Y-m-d').'"
+			GROUP BY a.grupo ORDER BY ';
+			
+			
+			
+			if ( $agrupar ){
+				$orden=' tk.tienda ASC, cantidad DESC';
+			}else{
+				$orden=' cantidad DESC';
+			}
+			$sql.=$orden;
+			
+			$sql.=' LIMIT 0,20;';
+			 
+			 
+			$modelo=new Modelo();
+			$pdo=$modelo->getPdo();						
+			$sth = $pdo->query( $sql );
+					
+			if ( !$sth ) {
+				$res=$modelo->getError(  );
+				print_r( $res );
+				exit;
+			}
+			
+			$res=array(
+				'success'=>true,
+				'datos'=> $sth->fetchAll(PDO::FETCH_ASSOC),			
+			);	
 		}
 		
-		$res=array(
-			'success'=>true,
-			'datos'=> $sth->fetchAll(PDO::FETCH_ASSOC),			
-		);	
+		
+		
 		
 		$pdf=new ReporteTop20Pdf();
 		

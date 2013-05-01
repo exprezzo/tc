@@ -13,9 +13,13 @@
 			var fechaf=$(tabid + ' [name="fechaf"]').val();
 			var tienda=$(tabid + ' [name="tienda"]').val();			
 			var agrupar=$(tabid +' [name="agrupar"]').prop('checked');
-			var url='/reportes/ultimos20Pdf?fechai='+fechai+'&fechaf='+fechaf+'&tienda='+tienda+'&agrupar='+agrupar;			
+			
+			var url='/';
+			$(tabid+' .pdfReader').attr('data',url);			
+			$(tabid+' .pdfReader').load(url);
+			
+			url='/reportes/ultimos20Pdf?fechai='+fechai+'&fechaf='+fechaf+'&tienda='+tienda+'&agrupar='+agrupar;			
 			$(tabid+' .pdfReader').attr('data',url);
-
 			//http://stackoverflow.com/questions/10366867/object-tag-doesnt-refresh-when-its-data-attribute-is-changed-in-chrome
 			$(tabid+' .pdfReader').load(url);
 		});

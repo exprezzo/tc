@@ -5,7 +5,7 @@ class ReporteNoVendidosPdf extends fpdf{
 	// Tabla simple
 	var $agrupar=false;
 	function __construct() {
-       parent::__construct('L');
+       parent::__construct('P');
        // print "In SubClass constructor\n";
    }
 	function BasicTable()
@@ -65,9 +65,7 @@ class ReporteNoVendidosPdf extends fpdf{
 			$this->Ln();
 		}
 		
-		$gw= empty( $this->columns[$idxAgrupados]['width']) ? 40:$this->columns[$idxAgrupados]['width'];			
-		$wTotal = ( $this->agrupar )? $tw : $tw +  $gw;
-		$this->cell( $wTotal, 6, 'Total General:  $'.$importeTot,0,0,'R');
+		
 	}
 
 
@@ -136,7 +134,7 @@ class ReporteNoVendidosPdf extends fpdf{
 			array(		
 				'header'=>'Descripcion',
 				'dataIndex'=>'nombre',
-				'width'=>100
+				'width'=>110
 			),
 			array(		
 				'header'=>'Talla',
