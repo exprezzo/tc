@@ -8,7 +8,7 @@ require_once $APPS_PATH.$_PETICION->modulo.'/modelos/tienda_modelo.php';
 
 class Reportes extends Controlador{
 	
-	function novendidos(){		
+	function novendidos(){
 		$tiendaMod = new TiendaModelo();
 		$res  =$tiendaMod->buscar( array() );				
 		$vista=$this->getVista();
@@ -39,30 +39,46 @@ class Reportes extends Controlador{
 		$vista->tiendas = $res['datos'];
 		$vista->mostrar();
 	}
+	
 	function vendidosPdf(){	
-		$sql='SELECT t.tienda as nombreTienda,
-		"modelo" as modelo, a.clavesecundaria, tkd.cantidad,tkd.descripcion, (tkd.cantidad * tkd.precioiva) as  importe
-		FROM tick_int tk
-		LEFT JOIN tick_det tkd ON tkd.clave = tk.clave  
-		LEFT JOIN tiendas t ON t.clave = tk.tienda
-		LEFT JOIN articulos2 a ON a.clave = tkd.primario
-		WHERE tk.fecha >=:fechai AND tk.fecha <= :fechaf		
-		ORDER BY tk.fecha DESC limit 0, 1000';
-		$modelo=new Modelo();
-		$pdo=$modelo->getPdo();		
-		$sth=$pdo->prepare($sql);
-
 		$fechai=DateTime::createFromFormat ( 'd/m/Y' , $_REQUEST['fechai'] );
 		$fechaf=DateTime::createFromFormat ( 'd/m/Y' , $_REQUEST['fechaf'] );
-			
+		$agrupar = ($_REQUEST['agrupar'] =='true') ? true: false;
+		$tienda = $_REQUEST['tienda'];		
 		
-		$sth->bindValue(':fechai', $fechai->format('Y-m-d') ,PDO::PARAM_STR);
-		$sth->bindValue(':fechaf', $fechaf->format('Y-m-d') ,PDO::PARAM_STR);
+		if ( !empty($tienda) ){
+			$filtroTienda = ' tk.tienda= '.$tienda.' AND ';
+		}else{
+			$filtroTienda = ' ';
+		}
 		
-		$exito=$sth->execute();
 		
-		if (  !$exito ) {
-			$res=$modelo->getError( $sth );
+		$sql='SELECT  t.tienda as nombreTienda,
+		"modelo" as modelo, a.clavesecundaria, sum(tkd.cantidad) as cantidad,tkd.descripcion, 
+		(tkd.cantidad * SUM(tkd.precioiva) ) as  importe
+		FROM tick_int tk
+		LEFT JOIN tick_det tkd ON tkd.clave = tk.clave  AND tkd.tienda = tk.tienda
+		LEFT JOIN tiendas t ON t.clave = tk.tienda
+		LEFT JOIN articulos2 a ON a.clave = tkd.primario				
+		WHERE '.$filtroTienda.' tk.fecha >= "'.$fechai->format('Y-m-d').'" and tk.fecha <= "'.$fechaf->format('Y-m-d').'"
+		GROUP BY a.grupo ORDER BY ';
+		
+		
+		
+		if ( $agrupar ){
+			$orden=' tk.tienda ASC, cantidad DESC';
+		}else{
+			$orden=' cantidad DESC';
+		}
+		$sql.=$orden;
+		
+		 // echo $sql; exit;
+		$modelo=new Modelo();
+		$pdo=$modelo->getPdo();						
+		$sth = $pdo->query( $sql );
+				
+		if ( !$sth ) {
+			$res=$modelo->getError(  );
 			print_r( $res );
 			exit;
 		}
@@ -70,209 +86,234 @@ class Reportes extends Controlador{
 		$res=array(
 			'success'=>true,
 			'datos'=> $sth->fetchAll(PDO::FETCH_ASSOC),			
-		);
-	
-		// print_r($res); exit;
+		);	
 		
 		$pdf=new ReporteVentasPdf();
 		$pdf->res = $res;
+		if ( $agrupar ){
+			$pdf->agrupar=true;
+		}
+		$pdf->fechai=$fechai;
+		$pdf->fechaf=$fechaf;
 		
 		$pdf->imprimir();
 		exit;
 	}
 	
 	function ultimos20Pdf(){	
+		$fechai=DateTime::createFromFormat ( 'd/m/Y' , $_REQUEST['fechai'] );
+		$fechaf=DateTime::createFromFormat ( 'd/m/Y' , $_REQUEST['fechaf'] );
+		$agrupar = ($_REQUEST['agrupar'] =='true') ? true: false;
+		$tienda = $_REQUEST['tienda'];		
+		
+		if ( !empty($tienda) ){
+			$filtroTienda = ' tk.tienda= '.$tienda.' AND ';
+		}else{
+			$filtroTienda = ' ';
+		}
+		
+		
+		$sql='SELECT  t.tienda as nombreTienda,
+		"modelo" as modelo, a.clavesecundaria, sum(tkd.cantidad) as cantidad,tkd.descripcion, 
+		(tkd.cantidad * SUM(tkd.precioiva) ) as  importe
+		FROM tick_int tk
+		LEFT JOIN tick_det tkd ON tkd.clave = tk.clave  AND tkd.tienda = tk.tienda
+		LEFT JOIN tiendas t ON t.clave = tk.tienda
+		LEFT JOIN articulos2 a ON a.clave = tkd.primario				
+		WHERE '.$filtroTienda.' tk.fecha >= "'.$fechai->format('Y-m-d').'" and tk.fecha <= "'.$fechaf->format('Y-m-d').'"
+		GROUP BY a.grupo ORDER BY ';
+		
+		if ( $agrupar ){
+			$orden=' tk.tienda ASC, cantidad ASC';
+		}else{
+			$orden=' cantidad ASC';
+		}
+		$sql.=$orden;
+		
+		$sql.=' LIMIT 0,20;';
+		 
+		 
+		$modelo=new Modelo();
+		$pdo=$modelo->getPdo();						
+		$sth = $pdo->query( $sql );
+				
+		if ( !$sth ) {
+			$res=$modelo->getError(  );
+			print_r( $res );
+			exit;
+		}
+		
 		$res=array(
 			'success'=>true,
-			'datos'=>array(),
-			'total'=>0
+			'datos'=> $sth->fetchAll(PDO::FETCH_ASSOC),			
 		);	
-	
+		
 		$pdf=new ReporteUltimos20Pdf();
+		
 		$pdf->res = $res;
+		if ( $agrupar ){
+			$pdf->agrupar=true;
+		}
+		$pdf->fechai=$fechai;
+		$pdf->fechaf=$fechaf;
 		
 		$pdf->imprimir();
 		exit;
 	}
 	
 	function top20Pdf(){	
+		$fechai=DateTime::createFromFormat ( 'd/m/Y' , $_REQUEST['fechai'] );
+		$fechaf=DateTime::createFromFormat ( 'd/m/Y' , $_REQUEST['fechaf'] );
+		$agrupar = ($_REQUEST['agrupar'] =='true') ? true: false;
+		$tienda = $_REQUEST['tienda'];		
+		
+		if ( !empty($tienda) ){
+			$filtroTienda = ' tk.tienda= '.$tienda.' AND ';
+		}else{
+			$filtroTienda = ' ';
+		}
+		
+		
+		$sql='SELECT  t.tienda as nombreTienda,
+		"modelo" as modelo, a.clavesecundaria, sum(tkd.cantidad) as cantidad,tkd.descripcion, 
+		(tkd.cantidad * SUM(tkd.precioiva) ) as  importe
+		FROM tick_int tk
+		LEFT JOIN tick_det tkd ON tkd.clave = tk.clave  AND tkd.tienda = tk.tienda
+		LEFT JOIN tiendas t ON t.clave = tk.tienda
+		LEFT JOIN articulos2 a ON a.clave = tkd.primario				
+		WHERE '.$filtroTienda.' tk.fecha >= "'.$fechai->format('Y-m-d').'" and tk.fecha <= "'.$fechaf->format('Y-m-d').'"
+		GROUP BY a.grupo ORDER BY ';
+		
+		
+		
+		if ( $agrupar ){
+			$orden=' tk.tienda ASC, cantidad DESC';
+		}else{
+			$orden=' cantidad DESC';
+		}
+		$sql.=$orden;
+		
+		$sql.=' LIMIT 0,20;';
+		 
+		 
+		$modelo=new Modelo();
+		$pdo=$modelo->getPdo();						
+		$sth = $pdo->query( $sql );
+				
+		if ( !$sth ) {
+			$res=$modelo->getError(  );
+			print_r( $res );
+			exit;
+		}
+		
 		$res=array(
 			'success'=>true,
-			'datos'=>array(),
-			'total'=>0
+			'datos'=> $sth->fetchAll(PDO::FETCH_ASSOC),			
 		);	
-	
+		
 		$pdf=new ReporteTop20Pdf();
+		
 		$pdf->res = $res;
+		if ( $agrupar ){
+			$pdf->agrupar=true;
+		}
+		$pdf->fechai=$fechai;
+		$pdf->fechaf=$fechaf;
 		
 		$pdf->imprimir();
 		exit;
+	
+		
+		
 	}
 	
 	function noVendidosPdf(){	
+		$fechai=DateTime::createFromFormat ( 'd/m/Y' , $_REQUEST['fechai'] );
+		$fechaf=DateTime::createFromFormat ( 'd/m/Y' , $_REQUEST['fechaf'] );
+		$agrupar = ($_REQUEST['agrupar'] =='true') ? true: false;
+		$tienda = $_REQUEST['tienda'];		
+		
+		if ( !empty($tienda) ){
+			$paramsTienda=array(
+				'filtros'=>array(
+					array(
+						'filterOperator'=>'equals',
+						'dataKey'=>'clave',
+						'filterValue'=>$tienda
+					)
+				)				
+			);
+		}else{
+			$paramsTienda=array();
+		}
+		
+		
+		$tiendaMod=new TiendaModelo();
+		$tiendasRes=$tiendaMod->buscar( $paramsTienda );
+		
+		$tiendas=$tiendasRes['datos'];
+		$resultados=array();
+		
+		$modelo=new Modelo();
+		$pdo=$modelo->getPdo();						
+		
+		foreach($tiendas as $tiendaObj){
+			$tiendaId=$tiendaObj['clave'];
+			
+			$sql='SELECT t.tienda nombreTienda, a.clavesecundaria, a.precio1,a.nombre,a.talla FROM articulos2 a 
+			LEFT JOIN tiendas t ON t.clave ="'.$tiendaId.'"
+			LEFT JOIN
+				(SELECT  DISTINCT(tkd.primario) primario
+					FROM tick_int tk
+					LEFT JOIN tick_det tkd ON tkd.clave = tk.clave  AND tkd.tienda = tk.tienda		
+					WHERE   tk.fecha >= "'.$fechai->format('Y-m-d').'" and tk.fecha <= "'.$fechaf->format('Y-m-d').'" AND tk.tienda ="'.$tiendaId.'"
+					ORDER BY  primario DESC) b ON a.clave = b.primario
+			WHERE b.primario IS NULL
+			GROUP BY a.grupo';
+			$sth = $pdo->query( $sql );
+				
+			if ( !$sth ) {
+				$res=$modelo->getError(  );
+				print_r( $res );
+				exit;
+			}
+			
+			$datos=$sth->fetchAll(PDO::FETCH_ASSOC);
+			$resultados = array_merge($datos, $resultados);
+		}
 		$res=array(
 			'success'=>true,
-			'datos'=>array(),
-			'total'=>0
-		);	
-	
+			'datos'=>$resultados 
+		);
+
+		
+		
+		
+		// if ( $agrupar ){
+			// $orden=' tk.tienda ASC, cantidad DESC';
+		// }else{
+			// $orden=' cantidad DESC';
+		// }
+		// $sql.=$orden;
+		
+		 // echo $sql; exit;
+		
+		
 		$pdf=new ReporteNoVendidosPdf();
+		
 		$pdf->res = $res;
+		if ( $agrupar ){
+			$pdf->agrupar=true;
+		}
+		$pdf->fechai=$fechai;
+		$pdf->fechaf=$fechaf;
 		
 		$pdf->imprimir();
 		exit;
+		
+		
 	}
 	
 	
-	function novendidosPdf_old(){		
-		set_time_limit ( 120 );
-		
-		$mod=new Modelo();
-		$pdo=$mod->getPdo();
-		
-		
-		$filtros=array(
-			array(
-				'filterOperator'=>'greaterorequal',
-				'filterValue'=>$_REQUEST['fechai'],
-				'dataKey'=>'fechai',
-				'field'=>'fecha',
-			),
-			array(
-				'filterOperator'=>'lessorequal',
-				'filterValue'=>$_REQUEST['fechaf'],
-				'dataKey'=>'fechaf',
-				'field'=>'fecha',
-			)			
-		);
-		
-		
-		$strFiltros=$mod->cadenaDeFiltros($filtros);		
-		
-		// echo $strFiltros; exit;
-		$sql='SELECT count(clave) as total from articulos2 WHERE clave NOT IN (select distinct(td.primario) FROM tick_int t
-		LEFT JOIN tick_det td ON td.clave = t.clave'.$strFiltros.')';		
-		
-		$sth = $pdo->prepare($sql);
-		
-		// echo  $sql; exit;
-		$mod->bindFiltros($sth, $filtros);
-		
-		
-		
-		$exito=$sth->execute();
-		if ( !$exito ){
-			$error= $mod->getError( $sth );
-			echo json_encode(  $error ); exit;
-			return $error;
-		}		
-		 // echo 'hasta aká'; exit;
-		
-		$datos=$sth->fetchAll( PDO::FETCH_ASSOC);
-		$total=$datos[0]['total'];
-		
-		print_r($total); exit;
-		
-		$sql='SELECT count(clave) as total from articulos2 WHERE clave NOT IN (select td.primario FROM tick_int t
-		LEFT JOIN tick_det td ON td.clave = t.clave'.$strFiltros.')';		
-		
-		$sql='SELECT * from articulos2 WHERE clave NOT IN (select primario from tick_det)';		
-		$sth = $pdo->prepare($sql);
-		$exito=$sth->execute();
-		if ( !$exito ){
-			$error= $mod->getError( $sth );
-			echo json_encode( $error );
-			return $error;
-		}		
-		$datos=$sth->fetchAll( PDO::FETCH_ASSOC);
-		
-		$res=array(
-			'success'=>true,
-			'datos'=>$datos,
-			'total'=>$total
-		);	
-	
-		$pdf=new ReporteNoVendidosPdf('L');
-		$pdf->res = $res;
-		
-		$pdf->imprimir();
-		exit;
-	}
-	
-	function top20Pdf_old(){				
-		set_time_limit ( 120 );
-		
-		$mod=new Modelo();
-		$pdo=$mod->getPdo();
-		
-		
-		$filtros=array(
-			array(
-				'filterOperator'=>'greaterorequal',
-				'filterValue'=>$_REQUEST['fechai'],
-				'dataKey'=>'fechai',
-				'field'=>'fecha',
-			),
-			array(
-				'filterOperator'=>'lessorequal',
-				'filterValue'=>$_REQUEST['fechaf'],
-				'dataKey'=>'fechaf',
-				'field'=>'fecha',
-			)			
-		);
-		
-		
-		$strFiltros=$mod->cadenaDeFiltros($filtros);		
-		
-		// echo $strFiltros; exit;
-		$sql='SELECT count( distinct(td.primario) ) as total from tick_int t
-		left join tick_det td ON td.clave = t.clave		
-		'.$strFiltros.')';		
-		
-		$sth = $pdo->prepare($sql);
-		
-		 echo  $sql; exit;
-		$mod->bindFiltros($sth, $filtros);
-		
-		
-		
-		$exito=$sth->execute();
-		if ( !$exito ){
-			$error= $mod->getError( $sth );
-			echo json_encode(  $error ); exit;
-			return $error;
-		}		
-		 // echo 'hasta aká'; exit;
-		
-		$datos=$sth->fetchAll( PDO::FETCH_ASSOC);
-		$total=$datos[0]['total'];
-		
-		print_r($total); exit;
-		
-		$sql='SELECT count(clave) as total from articulos2 WHERE clave NOT IN (select td.primario FROM tick_int t
-		LEFT JOIN tick_det td ON td.clave = t.clave'.$strFiltros.')';		
-		
-		$sql='SELECT * from articulos2 WHERE clave NOT IN (select primario from tick_det)';		
-		$sth = $pdo->prepare($sql);
-		$exito=$sth->execute();
-		if ( !$exito ){
-			$error= $mod->getError( $sth );
-			echo json_encode( $error );
-			return $error;
-		}		
-		$datos=$sth->fetchAll( PDO::FETCH_ASSOC);
-		
-		$res=array(
-			'success'=>true,
-			'datos'=>$datos,
-			'total'=>$total
-		);		
-	
-		$pdf=new ReporteTop20Pdf();
-		$pdf->res = $res;
-		
-		$pdf->imprimir();
-		exit;
-	}
 }
 ?>

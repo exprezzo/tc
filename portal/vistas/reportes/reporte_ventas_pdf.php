@@ -3,6 +3,7 @@ require_once '../php_libs/fpdf/fpdf.php';
 
 class ReporteVentasPdf extends fpdf{
 	// Tabla simple
+	var $agrupar=false;
 	function __construct() {
        parent::__construct('L');
        // print "In SubClass constructor\n";
@@ -12,49 +13,61 @@ class ReporteVentasPdf extends fpdf{
 		$tw=0;
 		
 		$idxAgrupados=-1;
+		$groupDataIndex='';
 		for($i=0; $i<sizeof($this->columns); $i++ ){
 			$col=$this->columns[$i];
 			
 			if ( isset($col['groupInfo']) ){
 				$idxAgrupados=$i;
+				$groupDataIndex=$col['dataIndex'];
 			}else{
 				$tw+=empty( $col['width'] ) ? 40 : $col['width'];
 			}			
-		}
-		
-		// if ($idxAgrupados>-1){
-			// $this->SetFont('Courier','',12);
-			// $this->Cell($tw,7,$this->columns[$idxAgrupados]['header'] ,1);
-			// $this->ln();
-		// }
-		
-		
-		
-		// Cabecera		
-		foreach($this->columns as $col){
-			// if ( isset($col['groupInfo']) ) continue;
-			
-			$this->SetFont('Courier','',12);
-			$w=empty( $col['width'] ) ? 40 : $col['width'];
-			$this->Cell($w,7,$col['header'],1);
-		}
-					
-		$this->Ln();
+		}		
+				
 		// Datos
+		$ultimoGrupo=-1;
+		
+		$piezas=0;
+		$importeTot=0;
+		
 		foreach($this->res['datos'] as $row)
-		 {
+		 {			
 			foreach($this->columns as $col){
 				$w=empty( $col['width'] ) ? 40 : $col['width'];
 				$di=$col['dataIndex'];
 				$val=$row[$di];
-				$this->SetFont('Courier','',12);
-				$align=empty( $col['align'] ) ? '' : $col['align'];
 				
-				$this->Cell($w,6,$val,1,0,$align);
+				//Antes de imprimir revisa si debe agrupar los datos
+				if ($di == 'cantidad'){
+					$piezas+=$val;
+				}else if ($di == 'importe'){
+					$importeTot+=$val;
+				}
+				
+				if ( $this->agrupar && $di == $groupDataIndex ){
+					if ( $ultimoGrupo != $val ){
+						$ultimoGrupo = $val;			
+						$this->SetFont('Courier','B',12);
+						$this->SetTextColor(255,255,255);
+						$this->SetFillColor(0,0,0);
+						$this->Cell($tw,6,$val ,1,1,'',1);
+						$this->SetTextColor(0,0,0);
+					}
+				}else{
+					$this->SetFont('Courier','',12);
+					$align=empty( $col['align'] ) ? '' : $col['align'];				
+					
+					$this->Cell($w,6,$val,1,0,$align);
+				}			
 			}
 				
 			$this->Ln();
 		}
+		
+		$gw= empty( $this->columns[$idxAgrupados]['width']) ? 40:$this->columns[$idxAgrupados]['width'];			
+		$wTotal = ( $this->agrupar )? $tw : $tw +  $gw;
+		$this->cell( $wTotal, 6, 'Total General:  $'.$importeTot,0,0,'R');
 	}
 
 
@@ -62,7 +75,43 @@ class ReporteVentasPdf extends fpdf{
 	{
 		$this->SetFont('Courier','',16);
 		$this->Cell(40,10,'QUE SE VENDE MAS EN TODAS LAS TIENDAS',0,1);
-		$this->Cell(40,10,'Totalizado por Modelo ',0,1);
+		$this->Cell(79,10,'Totalizado por Modelo.',0,0);		
+		
+		$this->SetFont('Courier','',14);
+		$this->Cell(30,10, ' Fechas: ',0,0,'',0);
+		
+		setlocale(LC_TIME, 'spanish');
+		
+		
+		
+		
+		$diai=$this->fechai->format('d');
+		$mesi= strftime('%b', $this->fechai->getTimestamp() );
+		$añoi=$this->fechai->format('Y');
+		
+		$diaf=$this->fechaf->format('d');
+		$mesf= strftime('%b', $this->fechaf->getTimestamp() );
+		$añof=$this->fechaf->format('Y');
+		
+		$this->Cell(100,10, ' '."$diai/$mesi/$añoi".' -  '."$diaf/$mesf/$añof",0,1,'',0);
+		
+		// $6272757.25
+		// $6272757.25
+
+
+		// 
+		
+		foreach($this->columns as $header){			
+			if (isset($header['groupInfo']) &&  $this->agrupar) continue;
+			
+			$this->SetFont('Courier','',12);
+			$w=empty( $header['width'] ) ? 40 : $header['width'];
+			$this->SetFillColor(204,204,255);
+			
+			$this->Cell($w,7,$header['header'],1,0,'',1);
+			
+		}
+		$this->ln();
 	}
 	
 	function imprimir(){
@@ -82,17 +131,18 @@ class ReporteVentasPdf extends fpdf{
 			array(		
 				'header'=>'Clave',
 				'dataIndex'=>'clavesecundaria',
-				'width'=>30
+				'width'=>50
 			),
 			array(		
 				'header'=>'Cantidad',
 				'dataIndex'=>'cantidad',
-				'width'=>30
+				'width'=>30,
+				'align'=>'R'
 			),			
 			array(		
 				'header'=>'Descripcion',
 				'dataIndex'=>'descripcion',
-				'width'=>60
+				'width'=>130
 			),
 			array(		
 				'header'=>'Importe',

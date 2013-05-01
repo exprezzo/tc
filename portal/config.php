@@ -1,6 +1,6 @@
 <?php
 $DB_CONFIG=array(
-	'DB_SERVER'	=>'localhost',
+	'DB_SERVER'	=>'127.0.0.1',
 	'DB_NAME'	=>'tc',
 	'DB_USER'	=>'root',
 	'DB_PASS'	=>'',
