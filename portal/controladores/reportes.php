@@ -271,7 +271,7 @@ class Reportes extends Controlador{
 				WHERE '.$filtroTienda.' tk.fecha >= "'.$fechai->format('Y-m-d').'" and tk.fecha <= "'.$fechaf->format('Y-m-d').'"
 				GROUP BY a.grupo ORDER BY cantidad DESC limit 0,20';
 				
-				// echo $sql; exit;
+				 // echo $sql; exit;
 				$sth = $pdo->query( $sql );
 					
 				

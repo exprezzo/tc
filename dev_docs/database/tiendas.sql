@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50508
 File Encoding         : 65001
 
-Date: 2013-04-30 11:22:40
+Date: 2013-05-01 19:39:38
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -21,8 +21,9 @@ SET FOREIGN_KEY_CHECKS=0;
 DROP TABLE IF EXISTS `tiendas`;
 CREATE TABLE `tiendas` (
   `clave` varchar(6) DEFAULT NULL,
-  `tienda` varchar(20) DEFAULT NULL,
-  KEY `clave` (`clave`)
+  `tienda` char(20) DEFAULT NULL,
+  KEY `clave` (`clave`),
+  KEY `tienda` (`tienda`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
