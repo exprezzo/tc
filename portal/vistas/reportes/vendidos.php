@@ -8,6 +8,10 @@
 		$(tabid + ' [name="agrupar"]').wijcheckbox({checked: true});
 		
 		$(tabid + ' .refresh').button().click(function(){
+			var ht = $('#tabs [role="tablist"]').height();		
+			var hh = $(tabid + ' .ui-widget-header').height();					
+			$( tabid + ' .pdfReader').height(ht - hh);
+		
 			var fechai=$(tabid + ' [name="fechai"]').val();
 			var fechaf=$(tabid + ' [name="fechaf"]').val();
 			var tienda=$(tabid + ' [name="tienda"]').val();			
@@ -23,6 +27,11 @@
 			$(tabid+' .pdfReader').load(url);
 		});
 		
+		setTimeout(function() { 
+			var ht = $('#tabs [role="tablist"]').height();		
+			var hh = $(tabid + ' .ui-widget-header').height();					
+			$( tabid + ' .pdfReader').height(ht - hh);
+		}, 1000);
 		
 		
 	});
@@ -32,9 +41,18 @@
 	display:inline-block !important;
 }
 .tiendas [role="combobox"]{
-	top:10px;
+	position: relative;
+	top: 10px;
+}
+@-moz-document url-prefix()
+{
+  .tiendas [role="combobox"]{
+		top: 29px !important; 
+	}
 }
 </style>
+
+
 <?php 
 	$elMes=date('m');
 	$elAnio=date('Y');
@@ -53,7 +71,7 @@
 		</div>
 		<div class="inputBox tiendas" style="margin-bottom:8px;display:block;margin-left:10px;"  >
 			<label style="">Tienda:</label>
-			<select name="tienda" class="txt_tienda" style="top:10px;">				
+			<select name="tienda" class="txt_tienda" style="">				
 				<?php
 					echo '<option value="0" selected>TODAS</option>';
 					// $rolId = $this->datos['rol'];						
@@ -75,9 +93,19 @@
 			<input class="refresh" type="submit" value="Ver reporte" />
 		</div>
 	</div>
-<div>
-<div>
-	<object class="pdfReader" data="" type="application/pdf" width="100%" height="93%">
+</div>
+<div >
+	<object class="pdfReader" data="/web/blanco.pdf" type="application/pdf" width="100%" height="93%" style="">
 		alt : <a href="#"></a>
 	</object>
 </div>
+
+<script>
+	$().ready(function(){
+		var tabid='#<?php echo $_REQUEST['tabId']; ?>';
+		
+	});
+	
+	
+	
+</script>

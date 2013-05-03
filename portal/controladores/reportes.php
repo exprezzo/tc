@@ -4,6 +4,8 @@ require_once $APPS_PATH.$_PETICION->modulo.'/vistas/reportes/reporte_no_vendidos
 require_once $APPS_PATH.$_PETICION->modulo.'/vistas/reportes/reporte_ventas_pdf.php';
 require_once $APPS_PATH.$_PETICION->modulo.'/vistas/reportes/reporte_top20_pdf.php';
 require_once $APPS_PATH.$_PETICION->modulo.'/vistas/reportes/reporte_ultimos20_pdf.php';
+require_once $APPS_PATH.$_PETICION->modulo.'/vistas/reportes/blanco_pdf.php';
+
 require_once $APPS_PATH.$_PETICION->modulo.'/modelos/tienda_modelo.php';
 
 class Reportes extends Controlador{
@@ -40,7 +42,8 @@ class Reportes extends Controlador{
 		$vista->mostrar();
 	}
 	
-	function vendidosPdf(){	
+	function vendidosPdf(){			
+		
 		$fechai=DateTime::createFromFormat ( 'd/m/Y' , $_REQUEST['fechai'] );
 		$fechaf=DateTime::createFromFormat ( 'd/m/Y' , $_REQUEST['fechaf'] );
 		$agrupar = ($_REQUEST['agrupar'] =='true') ? true: false;
@@ -59,7 +62,7 @@ class Reportes extends Controlador{
 		FROM tick_int tk
 		LEFT JOIN tick_det tkd ON tkd.clave = tk.clave  AND tkd.tienda = tk.tienda
 		LEFT JOIN tiendas t ON t.clave = tk.tienda
-		LEFT JOIN articulos2 a ON a.clave = tkd.primario				
+		LEFT JOIN articulos a ON a.clave = tkd.primario				
 		WHERE '.$filtroTienda.' tk.fecha >= "'.$fechai->format('Y-m-d').'" and tk.fecha <= "'.$fechaf->format('Y-m-d').'"
 		GROUP BY a.grupo ORDER BY ';
 		
@@ -149,7 +152,7 @@ class Reportes extends Controlador{
 				FROM tick_int tk
 				LEFT JOIN tick_det tkd ON tkd.clave = tk.clave  AND tkd.tienda = tk.tienda
 				LEFT JOIN tiendas t ON t.clave = tk.tienda
-				LEFT JOIN articulos2 a ON a.clave = tkd.primario				
+				LEFT JOIN articulos a ON a.clave = tkd.primario				
 				WHERE '.$filtroTienda.' tk.fecha >= "'.$fechai->format('Y-m-d').'" and tk.fecha <= "'.$fechaf->format('Y-m-d').'"
 				GROUP BY a.grupo ORDER BY cantidad ASC limit 0,20';
 				
@@ -177,7 +180,7 @@ class Reportes extends Controlador{
 			FROM tick_int tk
 			LEFT JOIN tick_det tkd ON tkd.clave = tk.clave  AND tkd.tienda = tk.tienda
 			LEFT JOIN tiendas t ON t.clave = tk.tienda
-			LEFT JOIN articulos2 a ON a.clave = tkd.primario				
+			LEFT JOIN articulos a ON a.clave = tkd.primario				
 			WHERE '.$filtroTienda.' tk.fecha >= "'.$fechai->format('Y-m-d').'" and tk.fecha <= "'.$fechaf->format('Y-m-d').'"
 			GROUP BY a.grupo ORDER BY ';
 			
@@ -267,7 +270,7 @@ class Reportes extends Controlador{
 				FROM tick_int tk
 				LEFT JOIN tick_det tkd ON tkd.clave = tk.clave  AND tkd.tienda = tk.tienda
 				LEFT JOIN tiendas t ON t.clave = tk.tienda
-				LEFT JOIN articulos2 a ON a.clave = tkd.primario				
+				LEFT JOIN articulos a ON a.clave = tkd.primario				
 				WHERE '.$filtroTienda.' tk.fecha >= "'.$fechai->format('Y-m-d').'" and tk.fecha <= "'.$fechaf->format('Y-m-d').'"
 				GROUP BY a.grupo ORDER BY cantidad DESC limit 0,20';
 				
@@ -295,7 +298,7 @@ class Reportes extends Controlador{
 			FROM tick_int tk
 			LEFT JOIN tick_det tkd ON tkd.clave = tk.clave  AND tkd.tienda = tk.tienda
 			LEFT JOIN tiendas t ON t.clave = tk.tienda
-			LEFT JOIN articulos2 a ON a.clave = tkd.primario				
+			LEFT JOIN articulos a ON a.clave = tkd.primario				
 			WHERE '.$filtroTienda.' tk.fecha >= "'.$fechai->format('Y-m-d').'" and tk.fecha <= "'.$fechaf->format('Y-m-d').'"
 			GROUP BY a.grupo ORDER BY ';
 			
@@ -365,8 +368,7 @@ class Reportes extends Controlador{
 		}else{
 			$paramsTienda=array();
 		}
-		
-		
+				
 		$tiendaMod=new TiendaModelo();
 		$tiendasRes=$tiendaMod->buscar( $paramsTienda );
 		
@@ -379,7 +381,7 @@ class Reportes extends Controlador{
 		foreach($tiendas as $tiendaObj){
 			$tiendaId=$tiendaObj['clave'];
 			
-			$sql='SELECT t.tienda nombreTienda, a.clavesecundaria, a.precio1,a.nombre,a.talla FROM articulos2 a 
+			$sql='SELECT t.tienda nombreTienda, a.clavesecundaria, a.precio1,a.nombre,a.talla FROM articulos a 
 			LEFT JOIN tiendas t ON t.clave ="'.$tiendaId.'"
 			LEFT JOIN
 				(SELECT  DISTINCT(tkd.primario) primario
@@ -418,7 +420,7 @@ class Reportes extends Controlador{
 		 // echo $sql; exit;
 		
 		
-		$pdf=new ReporteNoVendidosPdf();
+		$pdf=new ReporteNoVendidosPdf($agrupar);
 		
 		$pdf->res = $res;
 		if ( $agrupar ){

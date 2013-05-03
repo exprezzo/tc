@@ -4,8 +4,14 @@ require_once '../php_libs/fpdf/fpdf.php';
 class ReporteNoVendidosPdf extends fpdf{
 	// Tabla simple
 	var $agrupar=false;
-	function __construct() {
-       parent::__construct('P');
+	function __construct($agrupar) {
+		if ($agrupar){
+			parent::__construct('P');
+		}else{
+			parent::__construct('L');
+		}
+		$this->agrupar=$agrupar;
+       
        // print "In SubClass constructor\n";
    }
 	function BasicTable()

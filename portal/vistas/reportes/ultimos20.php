@@ -9,6 +9,10 @@
 		$(tabid + ' [name="agrupar"]').wijcheckbox();
 		
 		$(tabid + ' .refresh').button().click(function(){
+			var ht = $('#tabs [role="tablist"]').height();		
+			var hh = $(tabid + ' .ui-widget-header').height();					
+			$( tabid + ' .pdfReader').height(ht - hh);
+			
 			var fechai=$(tabid + ' [name="fechai"]').val();
 			var fechaf=$(tabid + ' [name="fechaf"]').val();
 			var tienda=$(tabid + ' [name="tienda"]').val();			
@@ -24,6 +28,11 @@
 			$(tabid+' .pdfReader').load(url);
 		});
 		
+		setTimeout(function() { 
+			var ht = $('#tabs [role="tablist"]').height();		
+			var hh = $(tabid + ' .ui-widget-header').height();					
+			$( tabid + ' .pdfReader').height(ht - hh);
+		}, 1000);
 		
 		
 	});
@@ -80,7 +89,7 @@
 	</div>
 <div>
 <div>
-	<object class="pdfReader" data="" type="application/pdf" width="100%" height="93%">
+	<object class="pdfReader" data="/web/blanco.pdf" type="application/pdf" width="100%" height="93%">
 		alt : <a href="#"></a>
 	</object>
 </div>
