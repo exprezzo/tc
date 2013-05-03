@@ -28,15 +28,15 @@
 					<img src="http://png.findicons.com/files/icons/2389/web_icon_pack/65/bluestyle_09_star.png">		 
 					<div>Vendidos</div>
 				</a>
-				<a tablink="false" href="#" titulo="Top 20" class="link">
+				<a tablink="true" href="/reportes/top20" titulo="Top 20" class="link">
 					<img src="http://png.findicons.com/files/icons/2389/web_icon_pack/65/greenstyle_09_star.png">		 
 					<div>Top 20</div>
 				</a>
-				<a tablink="false" href="#" titulo="Ultimos 20" class="link">
+				<a tablink="true" href="/reportes/ultimos20" titulo="Ultimos 20" class="link">
 					<img src="http://png.findicons.com/files/icons/2389/web_icon_pack/65/redstyle_09_star.png">		 
 					<div>Ultimos 20</div>
 				</a>
-				<a tablink="false" href="#" titulo="No Vendidos" class="link">
+				<a tablink="true" href="/reportes/novendidos" titulo="No Vendidos" class="link">
 					<img src="http://png.findicons.com/files/icons/2389/web_icon_pack/65/blackstyle_09_star.png">		          
 					<div>No vendidos</div>
 				</a>				
