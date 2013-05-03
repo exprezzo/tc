@@ -1,6 +1,5 @@
-tc
-==
 Instalacion:
+==
 
 En la raiz de las aplicaciones web:
 
