@@ -3,7 +3,9 @@ tc
 Instalacion:
 
 En la raiz de las aplicaciones web:
+
 	linux: 				www/ 
+	
 	windows + xampp: htdocs/ 
 	
 Ejecutamos:
