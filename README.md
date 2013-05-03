@@ -4,18 +4,18 @@ Instalacion:
 
 En la raiz de las aplicaciones web:
 
-	linux: 				www/ 
+	/www/  			 (linux)
 	
-	windows + xampp: htdocs/ 
+	/xampp/htdocs/  (windows + xampp)  
 	
 Ejecutamos:
 
- git clone https://github.com/exprezzo/tc.git NOMBREPROYECTO
+	git clone https://github.com/exprezzo/tc.git NOMBREPROYECTO
  
- Luego nos ubicamos dentro de la carpeta NOMBREPROYECTO
+Luego nos ubicamos dentro de la carpeta NOMBREPROYECTO
  
- Y ejecutamos:
+Y ejecutamos:
  
- git submodule update --init core
+	git submodule update --init core
  
- git submodule update --init modulos/backend
+	git submodule update --init modulos/backend
