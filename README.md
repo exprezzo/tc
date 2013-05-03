@@ -17,4 +17,5 @@ Ejecutamos:
  Y ejecutamos:
  
  git submodule update --init core
+ 
  git submodule update --init modulos/backend
