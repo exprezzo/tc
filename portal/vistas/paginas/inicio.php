@@ -196,6 +196,10 @@ if ( !isset($_SESSION['isLoged'])|| $_SESSION['isLoged']!=true ){
 			$('.link-salir').mouseleave(function(){
 				// $(this).removeClass('ui-state-hover');
 			});
+			
+			$('#btnMenu').click(function(){
+				$('#menuPrincipal').toggle( 100 );
+			});
 		});
 		
 		
@@ -222,7 +226,7 @@ if ( !isset($_SESSION['isLoged'])|| $_SESSION['isLoged']!=true ){
 			padding:0;
 		}
 		
-		#tabs [role="tabpanel"]{
+		#tabs > .wijmo-wijtabs-content > div[role="tabpanel"], #tabs > div[role="tabpanel"]{
 			width:87%;
 			position:absolute;
 			right:-2px;
@@ -247,15 +251,29 @@ if ( !isset($_SESSION['isLoged'])|| $_SESSION['isLoged']!=true ){
 		body{
 			background-color:black;
 		}
+		
+		#btnMenu{
+			cursor:pointer;
+		}
 	</style>	
 </head>
 <body style="padding:0; margin:0;" class="" >	
 		<div>
-			<div style="padding:10px; background-color:black; color:white;"><?php echo $APP_CONFIG['nombre']; ?></div>
-			<div style="padding:10px; display: inline-block;position: absolute;right: 0;top: 0;">
+			<div style="display:inline-block; padding:10px; background-color:black; color:white;"><?php echo $APP_CONFIG['nombre']; ?></div>
+			
+			
+			<div style="padding:10px; display: inline-block; float:right; right: 0;top: 0;">
 				<div style="padding-right: 5px; display: inline-block;color:white;"><?php print_r( $_SESSION['userInfo']['name'] ); ?></div>
 				<div style="display: inline-block; color:white;" class=" link-salir" ><a onclick="salir()" href="#" style="color:white;" >Salir</a></div>			
 			</div>			
+			
+			<div style="display:inline-block;margin-top: 3px;float:right;margin-left: 112px;"> 
+				<div id="btnMenu" href="#" titulo="Menu Principal">
+					<img src="http://png.findicons.com/files/icons/756/ginux/32/run.png" style="cursor: ponter;">
+				</div>
+				
+				<div><?php $this->mostrar('/menu'); ?></div>
+			</div>
 		</div>
 				
 		<div id="tabs">

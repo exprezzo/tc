@@ -12,7 +12,7 @@ function iniciarLinkTabs(){
 		
 		var titulo=link.attr('titulo');
 		link.click(function(){
-			TabManager.add(destino,titulo,0);
+			TabManager.add(destino,titulo,1);
 		});
 	});
 }

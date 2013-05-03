@@ -88,9 +88,7 @@ class usuarios2 extends Usuarios{
 		$vista->datos=$obj;		
 		
 		$rolMod = new rolModelo();
-		$res = $rolMod->buscar( array() );		
-		// print_r($res);
-		
+		$res = $rolMod->buscar( array() );				
 		$vista->roles=$res['datos'];
 		
 		global $_PETICION;

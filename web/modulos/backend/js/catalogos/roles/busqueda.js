@@ -1,4 +1,4 @@
-﻿var Busquedausuarios=function(){
+﻿var Busquedaroles=function(){
 	this.tituloNuevo='Nueva';
 	this.eliminar=function(){
 	
@@ -170,15 +170,8 @@
 			columns: [ 
 			    // { dataKey: "id", hidden:true, visible:true, headerText: "ID" }						
 				
-{ dataKey: "id", visible:false, headerText: "Id" },
-{ dataKey: "nick", visible:true, headerText: "Usuario" },
-{ dataKey: "name", visible:true, headerText: "Nombre" },
-{ dataKey: "pass", visible:false, headerText: "Pass" },
-{ dataKey: "email", visible:true, headerText: "Email" },
-{ dataKey: "rol", visible:false, headerText: "Rol" },
-{ dataKey: "fbid", visible:false, headerText: "Fbid" },
-{ dataKey: "picture", visible:false, headerText: "Picture" },
-{ dataKey: "originalName", visible:false, headerText: "Originalname" }
+{ dataKey: "id", visible:true, headerText: "Id" },
+{ dataKey: "rol", visible:true, headerText: "Rol" }
 			]
 		});
 		
