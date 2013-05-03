@@ -89,7 +89,7 @@
 	</div>
 <div>
 <div>
-	<object class="pdfReader" data="/web/blanco.pdf" type="application/pdf" width="100%" height="93%">
+	<object class="pdfReader" data="<?php echo $_APP_PATH; ?>web/blanco.pdf" type="application/pdf" width="100%" height="93%">
 		alt : <a href="#"></a>
 	</object>
 </div>

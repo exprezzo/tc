@@ -1,4 +1,4 @@
-Instalacion:
+Instalación:
 ==
 
 En la raiz de las aplicaciones web:
