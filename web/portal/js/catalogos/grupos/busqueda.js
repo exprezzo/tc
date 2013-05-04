@@ -1,4 +1,4 @@
-﻿var Busquedausuarios=function(){
+﻿var Busquedagrupos=function(){
 	this.tituloNuevo='Nueva';
 	this.eliminar=function(){
 	
@@ -75,7 +75,7 @@
 		jTab.data('tabObj',this);		
 				
 		var jTab=$('a[href="'+tabId+'"]');		//// this.agregarClase('busqueda_'+this.controlador.nombre);
-	    jTab.html(this.catalogo.nombre);		 
+	    jTab.html('Grupos');		 
 		 jTab.addClass('busqueda_'+this.controlador.nombre); 
 		//-------------------------------------------
 		$('div'+tabId).css('padding','0px 0 0 0');
@@ -171,15 +171,8 @@
 			columns: [ 
 			    // { dataKey: "id", hidden:true, visible:true, headerText: "ID" }						
 				
-{ dataKey: "id", visible:false, headerText: "Id" },
-{ dataKey: "nick", visible:true, headerText: "Usuario" },
-{ dataKey: "name", visible:true, headerText: "Nombre" },
-{ dataKey: "pass", visible:false, headerText: "Pass" },
-{ dataKey: "email", visible:true, headerText: "Email" },
-{ dataKey: "rol", visible:false, headerText: "Rol" },
-{ dataKey: "fbid", visible:false, headerText: "Fbid" },
-{ dataKey: "picture", visible:false, headerText: "Picture" },
-{ dataKey: "originalName", visible:false, headerText: "Originalname" }
+{ dataKey: "Clave", visible:true, headerText: "Clave" },
+{ dataKey: "Nombre", visible:true, headerText: "Nombre" }
 			]
 		});
 		

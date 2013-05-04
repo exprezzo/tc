@@ -11,6 +11,7 @@ require_once $APPS_PATH.$_PETICION->modulo.'/modelos/tienda_modelo.php';
 class Reportes extends Controlador{
 	
 	function novendidos(){
+		
 		$tiendaMod = new TiendaModelo();
 		$res  =$tiendaMod->buscar( array() );				
 		$vista=$this->getVista();
@@ -43,7 +44,10 @@ class Reportes extends Controlador{
 	}
 	
 	function vendidosPdf(){			
-		
+		if ( empty($_SESSION) || empty($_SESSION['isLoged']) || !( $_SESSION['userInfo']['rol']==1 || $_SESSION['userInfo']['rol']==2 || $_SESSION['userInfo']['rol']==3)  ) {
+			echo 'No tiene suficientes privilegios para ver este reporte'; exit;
+		}
+				
 		$fechai=DateTime::createFromFormat ( 'd/m/Y' , $_REQUEST['fechai'] );
 		$fechaf=DateTime::createFromFormat ( 'd/m/Y' , $_REQUEST['fechaf'] );
 		$agrupar = ($_REQUEST['agrupar'] =='true') ? true: false;
@@ -57,12 +61,13 @@ class Reportes extends Controlador{
 		
 		
 		$sql='SELECT  t.tienda as nombreTienda,
-		"modelo" as modelo, a.clavesecundaria, sum(tkd.cantidad) as cantidad,tkd.descripcion, 
+		g.nombre as modelo, a.clavesecundaria, sum(tkd.cantidad) as cantidad,tkd.descripcion, 
 		(tkd.cantidad * SUM(tkd.precioiva) ) as  importe
 		FROM tick_int tk
 		LEFT JOIN tick_det tkd ON tkd.clave = tk.clave  AND tkd.tienda = tk.tienda
 		LEFT JOIN tiendas t ON t.clave = tk.tienda
 		LEFT JOIN articulos a ON a.clave = tkd.primario				
+		LEFT JOIN grupos g ON g.clave = a.grupo
 		WHERE '.$filtroTienda.' tk.fecha >= "'.$fechai->format('Y-m-d').'" and tk.fecha <= "'.$fechaf->format('Y-m-d').'"
 		GROUP BY a.grupo ORDER BY ';
 		
@@ -104,6 +109,9 @@ class Reportes extends Controlador{
 	}
 	
 	function ultimos20Pdf(){	
+		if ( empty($_SESSION) || empty($_SESSION['isLoged']) || !( $_SESSION['userInfo']['rol']==1 || $_SESSION['userInfo']['rol']==2 || $_SESSION['userInfo']['rol']==3)  ) {
+			echo 'No tiene suficientes privilegios para ver este reporte'; exit;
+		}
 		$fechai=DateTime::createFromFormat ( 'd/m/Y' , $_REQUEST['fechai'] );
 		$fechaf=DateTime::createFromFormat ( 'd/m/Y' , $_REQUEST['fechaf'] );
 		$agrupar = ($_REQUEST['agrupar'] =='true') ? true: false;
@@ -147,12 +155,13 @@ class Reportes extends Controlador{
 				$filtroTienda=' tk.tienda="'.$tiendaId.'" AND ';
 				
 				$sql='SELECT  t.tienda as nombreTienda,
-				"modelo" as modelo, a.clavesecundaria, sum(tkd.cantidad) as cantidad,tkd.descripcion, 
+				g.nombre as modelo, a.clavesecundaria, sum(tkd.cantidad) as cantidad,tkd.descripcion, 
 				(tkd.cantidad * SUM(tkd.precioiva) ) as  importe
 				FROM tick_int tk
 				LEFT JOIN tick_det tkd ON tkd.clave = tk.clave  AND tkd.tienda = tk.tienda
 				LEFT JOIN tiendas t ON t.clave = tk.tienda
-				LEFT JOIN articulos a ON a.clave = tkd.primario				
+				LEFT JOIN articulos a ON a.clave = tkd.primario	
+				LEFT JOIN grupos g ON g.clave = a.grupo				
 				WHERE '.$filtroTienda.' tk.fecha >= "'.$fechai->format('Y-m-d').'" and tk.fecha <= "'.$fechaf->format('Y-m-d').'"
 				GROUP BY a.grupo ORDER BY cantidad ASC limit 0,20';
 				
@@ -175,12 +184,13 @@ class Reportes extends Controlador{
 			);
 		}else{
 			$sql='SELECT  t.tienda as nombreTienda,
-			"modelo" as modelo, a.clavesecundaria, sum(tkd.cantidad) as cantidad,tkd.descripcion, 
+			g.nombre as modelo, a.clavesecundaria, sum(tkd.cantidad) as cantidad,tkd.descripcion, 
 			(tkd.cantidad * SUM(tkd.precioiva) ) as  importe
 			FROM tick_int tk
 			LEFT JOIN tick_det tkd ON tkd.clave = tk.clave  AND tkd.tienda = tk.tienda
 			LEFT JOIN tiendas t ON t.clave = tk.tienda
 			LEFT JOIN articulos a ON a.clave = tkd.primario				
+			LEFT JOIN grupos g ON g.clave = a.grupo
 			WHERE '.$filtroTienda.' tk.fecha >= "'.$fechai->format('Y-m-d').'" and tk.fecha <= "'.$fechaf->format('Y-m-d').'"
 			GROUP BY a.grupo ORDER BY ';
 			
@@ -222,6 +232,9 @@ class Reportes extends Controlador{
 	}
 	
 	function top20Pdf(){	
+		if ( empty($_SESSION) || empty($_SESSION['isLoged']) || !( $_SESSION['userInfo']['rol']==1 || $_SESSION['userInfo']['rol']==2 || $_SESSION['userInfo']['rol']==3)  ) {
+			echo 'No tiene suficientes privilegios para ver este reporte'; exit;
+		}
 		$fechai=DateTime::createFromFormat ( 'd/m/Y' , $_REQUEST['fechai'] );
 		$fechaf=DateTime::createFromFormat ( 'd/m/Y' , $_REQUEST['fechaf'] );
 		$agrupar = ($_REQUEST['agrupar'] =='true') ? true: false;
@@ -265,12 +278,13 @@ class Reportes extends Controlador{
 				$filtroTienda=' tk.tienda="'.$tiendaId.'" AND ';
 				
 				$sql='SELECT  t.tienda as nombreTienda,
-				"modelo" as modelo, a.clavesecundaria, sum(tkd.cantidad) as cantidad,tkd.descripcion, 
+				g.nombre as modelo, a.clavesecundaria, sum(tkd.cantidad) as cantidad,tkd.descripcion, 
 				(tkd.cantidad * SUM(tkd.precioiva) ) as  importe
 				FROM tick_int tk
 				LEFT JOIN tick_det tkd ON tkd.clave = tk.clave  AND tkd.tienda = tk.tienda
 				LEFT JOIN tiendas t ON t.clave = tk.tienda
 				LEFT JOIN articulos a ON a.clave = tkd.primario				
+				LEFT JOIN grupos g ON g.clave = a.grupo
 				WHERE '.$filtroTienda.' tk.fecha >= "'.$fechai->format('Y-m-d').'" and tk.fecha <= "'.$fechaf->format('Y-m-d').'"
 				GROUP BY a.grupo ORDER BY cantidad DESC limit 0,20';
 				
@@ -293,12 +307,13 @@ class Reportes extends Controlador{
 			);
 		}else{
 			$sql='SELECT  t.tienda as nombreTienda,
-			"modelo" as modelo, a.clavesecundaria, sum(tkd.cantidad) as cantidad,tkd.descripcion, 
+			g.nombre as modelo, a.clavesecundaria, sum(tkd.cantidad) as cantidad,tkd.descripcion, 
 			(tkd.cantidad * SUM(tkd.precioiva) ) as  importe
 			FROM tick_int tk
 			LEFT JOIN tick_det tkd ON tkd.clave = tk.clave  AND tkd.tienda = tk.tienda
 			LEFT JOIN tiendas t ON t.clave = tk.tienda
 			LEFT JOIN articulos a ON a.clave = tkd.primario				
+			LEFT JOIN grupos g ON g.clave = a.grupo
 			WHERE '.$filtroTienda.' tk.fecha >= "'.$fechai->format('Y-m-d').'" and tk.fecha <= "'.$fechaf->format('Y-m-d').'"
 			GROUP BY a.grupo ORDER BY ';
 			
@@ -330,9 +345,6 @@ class Reportes extends Controlador{
 			);	
 		}
 		
-		
-		
-		
 		$pdf=new ReporteTop20Pdf();
 		
 		$pdf->res = $res;
@@ -343,13 +355,13 @@ class Reportes extends Controlador{
 		$pdf->fechaf=$fechaf;
 		
 		$pdf->imprimir();
-		exit;
-	
-		
-		
+		exit;	
 	}
 	
 	function noVendidosPdf(){	
+		if ( empty($_SESSION) || empty($_SESSION['isLoged']) || !( $_SESSION['userInfo']['rol']==1 || $_SESSION['userInfo']['rol']==2 || $_SESSION['userInfo']['rol']==3)  ) {
+			echo 'No tiene suficientes privilegios para ver este reporte'; exit;
+		}
 		$fechai=DateTime::createFromFormat ( 'd/m/Y' , $_REQUEST['fechai'] );
 		$fechaf=DateTime::createFromFormat ( 'd/m/Y' , $_REQUEST['fechaf'] );
 		$agrupar = ($_REQUEST['agrupar'] =='true') ? true: false;

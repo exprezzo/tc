@@ -9,23 +9,25 @@
 		$(tabid + ' [name="agrupar"]').wijcheckbox();
 		
 		$(tabid + ' .refresh').button().click(function(){
-			var ht = $('#tabs [role="tablist"]').height();		
-			var hh = $(tabid + ' .ui-widget-header').height();					
-			$( tabid + ' .pdfReader').height(ht - hh);
+			
 			
 			var fechai=$(tabid + ' [name="fechai"]').val();
 			var fechaf=$(tabid + ' [name="fechaf"]').val();
 			var tienda=$(tabid + ' [name="tienda"]').val();			
 			var agrupar=$(tabid +' [name="agrupar"]').prop('checked');
 			
-			var url='/';
+			var url=kore.url_base+'web/blanco.pdf';
 			$(tabid+' .pdfReader').attr('data',url);			
 			$(tabid+' .pdfReader').load(url);
 			
-			url='/reportes/top20Pdf?fechai='+fechai+'&fechaf='+fechaf+'&tienda='+tienda+'&agrupar='+agrupar;			
+			url=kore.url_base+'reportes/top20Pdf?fechai='+fechai+'&fechaf='+fechaf+'&tienda='+tienda+'&agrupar='+agrupar;			
 			$(tabid+' .pdfReader').attr('data',url);
 			//http://stackoverflow.com/questions/10366867/object-tag-doesnt-refresh-when-its-data-attribute-is-changed-in-chrome
 			$(tabid+' .pdfReader').load(url);
+			
+			var ht = $('#tabs [role="tablist"]').height();		
+			var hh = $(tabid + ' .ui-widget-header').height();					
+			$( tabid + ' .pdfReader').height(ht - hh);
 		});
 		
 		setTimeout(function() { 
@@ -41,7 +43,14 @@
 	display:inline-block !important;
 }
 .tiendas [role="combobox"]{
-	top:10px;
+	position: relative;
+	top: 10px;
+}
+@-moz-document url-prefix()
+{
+  .tiendas [role="combobox"]{
+		top: 29px !important; 
+	}
 }
 </style>
 

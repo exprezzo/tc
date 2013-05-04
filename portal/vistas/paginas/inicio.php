@@ -1,6 +1,6 @@
 <?php
 if ( !isset($_SESSION['isLoged'])|| $_SESSION['isLoged']!=true ){	
-	header ('Location: '.$APP_PATH.$_PETICION->modulo.'/user/login'); exit;
+	header ('Location: /portal/usuarios/login'); exit;
 }
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -169,8 +169,13 @@ if ( !isset($_SESSION['isLoged'])|| $_SESSION['isLoged']!=true ){
 			iniciarLinkTabs(); //A los objetos con atributo linkTab=true,  se les agrega comportamiento ajax para abrir tabs.
 			
 			// TabManager.add(kore.mod_url_base+'usuarios2/busqueda','Usuarios',1);
+			<?php 
+			if ( $_SESSION['userInfo']['rol']==1 || $_SESSION['userInfo']['rol']==2 || $_SESSION['userInfo']['rol']==3 ){
+			?>
 			TabManager.add(kore.mod_url_base+'reportes/menu','Reportes',1);
-			 
+			<?php
+			}
+			?>
 			
 			$(window).resize( function() {
 			  ajustarTab();
@@ -254,6 +259,15 @@ if ( !isset($_SESSION['isLoged'])|| $_SESSION['isLoged']!=true ){
 		
 		#btnMenu{
 			cursor:pointer;
+		}
+		
+		.wijmo-wijgrid-filter .wijmo-wijinput{
+			background:black ;
+			color:white;
+		}
+		
+		.wijmo-wijgrid-filter-trigger{
+			background:black !important;
 		}
 	</style>	
 </head>

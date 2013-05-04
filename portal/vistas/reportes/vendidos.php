@@ -1,7 +1,7 @@
 <script>			
 	$( function(){		
 		var tabid='#<?php echo $_REQUEST['tabId']; ?>';
-			 
+		
 		$(tabid + ' [name="fechai"]').wijinputdate({showTrigger:true,dateFormat:'dd/MM/yyyy'});
 		$(tabid + ' [name="fechaf"]').wijinputdate({showTrigger:true,dateFormat:'dd/MM/yyyy'});
 		$(tabid + ' [name="tienda"]').wijcombobox();
@@ -17,11 +17,11 @@
 			var tienda=$(tabid + ' [name="tienda"]').val();			
 			var agrupar=$(tabid +' [name="agrupar"]').prop('checked');
 			
-			var url='/';
+			var url=kore.url_base+'web/blanco.pdf';
 			$(tabid+' .pdfReader').attr('data',url);			
 			$(tabid+' .pdfReader').load(url);
 			
-			url='/reportes/vendidosPdf?fechai='+fechai+'&fechaf='+fechaf+'&tienda='+tienda+'&agrupar='+agrupar;			
+			url=kore.url_base+'reportes/vendidosPdf?fechai='+fechai+'&fechaf='+fechaf+'&tienda='+tienda+'&agrupar='+agrupar;			
 			$(tabid+' .pdfReader').attr('data',url);
 			//http://stackoverflow.com/questions/10366867/object-tag-doesnt-refresh-when-its-data-attribute-is-changed-in-chrome
 			$(tabid+' .pdfReader').load(url);

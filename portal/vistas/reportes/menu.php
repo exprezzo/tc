@@ -19,7 +19,7 @@
 }
 
 </style>
-<div style="padding:10px;" class="menuReportes">
+<div style="padding:10px;" class="menuReportes">	
 	<h1>Reportes</h1>
 	<a tablink="true" href="<?php echo $_APP_PATH.'portal'; ?>/reportes/vendidos" titulo="Vendidos">
 		<img src="http://png.findicons.com/files/icons/2389/web_icon_pack/65/bluestyle_09_star.png">		 

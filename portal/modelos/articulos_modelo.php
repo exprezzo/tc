@@ -1,6 +1,6 @@
 <?php
 class articulosModelo extends Modelo{
-	var $tabla="articulos2";
+	var $tabla="articulos";
 	var $campos=array('clave','clavesecundaria','nombre','grupo','presentacion','depto','dcategoria','tipo','ultimoproveedor','costo','precio1','precio2','precio3','precio4','precio5','talla','descuentomax','ultimaconsulta','reorden','reordendes','utilidadventa','utilidadventa2','utilidadventa3','utilidadventa4','utilidadventa5','utilidadventa1sis','utilidadventa2sis','utilidadventa3sis','utilidadventa4sis','utilidadventa5sis','utilidadFactor','utilidadFactorsis','IVA','FactorConv','UnidadConv','CostoPromedio','PrecioFactor','ExistenciaF','subgrupo','subMarcas','Emaxima');
 	var $pk="clave";
 	
