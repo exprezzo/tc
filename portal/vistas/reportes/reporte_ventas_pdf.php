@@ -57,7 +57,9 @@ class ReporteVentasPdf extends fpdf{
 				}else{
 					$this->SetFont('Courier','',12);
 					$align=empty( $col['align'] ) ? '' : $col['align'];				
-					
+					if ($di == 'importe'){
+						$val ='$'.number_format($val,2,'.',',');
+					}
 					$this->Cell($w,6,$val,1,0,$align);
 				}			
 			}
@@ -67,6 +69,8 @@ class ReporteVentasPdf extends fpdf{
 		
 		$gw= empty( $this->columns[$idxAgrupados]['width']) ? 40:$this->columns[$idxAgrupados]['width'];			
 		$wTotal = ( $this->agrupar )? $tw : $tw +  $gw;
+		$importeTot = number_format($importeTot,2,'.',',');
+		
 		$this->cell( $wTotal, 6, 'Total General:  $'.$importeTot,0,0,'R');
 	}
 
@@ -147,7 +151,7 @@ class ReporteVentasPdf extends fpdf{
 			array(		
 				'header'=>'Importe',
 				'dataIndex'=>'importe',
-				'width'=>20,
+				'width'=>25,
 				'align'=>'R'
 			)
 		);

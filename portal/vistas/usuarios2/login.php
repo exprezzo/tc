@@ -2,12 +2,24 @@
 <html>
 <head>
 <style>
+.loginForm:before{
+	background-color: white;
+	content: '*';
+	opacity: .1;
+	width: 300px;
+	height: 250px;
+	display: inline-block;
+	position: absolute;
+	margin-left: -34px;
+	top:0;
+	left:0;
+	border-radius: 7px;
+	
+}
 .loginForm{
+	z-index:2;
 	display:inline-block;
-	padding:10px;
-	
-	
-	
+	padding:10px;	
 	height: 184px;
 	color:white;
 	left: 50%;
@@ -16,13 +28,42 @@
 	top: 50% !important;
 	margin-top: -100px;
 }
+
+.loginForm input{
+	position:relative;
+}
 body{
 	background-color:black;
+	background-image:url(http://www.kindreviews.com/wp-content/uploads/2011/08/FreshBakedWebBackground.jpg);
+
 }
 label.error{
 	color:red;
 }
+
+@-moz-document url-prefix()
+{
+  .loginForm:before{
+	margin-left: -25px;
+  }
+}
+
+
+@-ms-document url-prefix()
+{
+  .loginForm:before{
+	margin-left: -20px;
+  }
+}
+
 </style>
+<!--[if gt IE 6]>
+<style>
+	.loginForm:before{
+		margin-left: -20px;
+	  }
+</style>
+<![endif]-->
 	<?php 
 	$rutaTema='http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.11/themes/hot-sneaks/jquery-ui.css'; 	
 	?>

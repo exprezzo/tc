@@ -63,7 +63,9 @@ class ReporteNoVendidosPdf extends fpdf{
 				}else{
 					$this->SetFont('Courier','',12);
 					$align=empty( $col['align'] ) ? '' : $col['align'];				
-					
+					if ($di == 'precio1'){
+						$val = '$'.number_format($val,2,'.',',');
+					}
 					$this->Cell($w,6,$val,1,0,$align);
 				}			
 			}
