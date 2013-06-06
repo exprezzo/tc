@@ -167,6 +167,7 @@
 			pageSize:pageSize,
 			selectionMode:'singleRow',
 			data:dataSource,
+			showFilter:true,
 			columns: [ 
 			    // { dataKey: "id", hidden:true, visible:true, headerText: "ID" }						
 				
