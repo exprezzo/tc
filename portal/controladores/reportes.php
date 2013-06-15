@@ -52,31 +52,38 @@ class Reportes extends Controlador{
 		$fechaf=DateTime::createFromFormat ( 'd/m/Y' , $_REQUEST['fechaf'] );
 		$agrupar = ($_REQUEST['agrupar'] =='true') ? true: false;
 		$tienda = $_REQUEST['tienda'];		
+		$articulo = empty($_REQUEST['articulo'])? '' : $_REQUEST['articulo'];		
+		if ( !empty($articulo) ){
+			$filtroArticulo = ' tkd.descripcion LIKE "%'.$articulo.'%" AND ';
+		}else{
+			$filtroArticulo = ' ';
+		}
 		
 		if ( !empty($tienda) ){
-			$filtroTienda = ' tk.tienda= '.$tienda.' AND ';
+			$filtroTienda = ' tkd.tienda= '.$tienda.' AND ';
 		}else{
 			$filtroTienda = ' ';
 		}
 		
 		
+		
 		$sql='SELECT  t.tienda as nombreTienda,
 		g.nombre as modelo, a.clavesecundaria, sum(tkd.cantidad) as cantidad,tkd.descripcion, 
 		(tkd.cantidad * SUM(tkd.precioiva) ) as  importe
-		FROM tick_int tk
-		LEFT JOIN tick_det tkd ON tkd.clave = tk.clave  AND tkd.tienda = tk.tienda
-		LEFT JOIN tiendas t ON t.clave = tk.tienda
+		FROM tick_det tkd 
+		LEFT JOIN tiendas t ON t.clave = tkd.tienda
 		LEFT JOIN articulos a ON a.clave = tkd.primario				
 		LEFT JOIN grupos g ON g.clave = a.grupo
-		WHERE '.$filtroTienda.' tk.fecha >= "'.$fechai->format('Y-m-d').'" and tk.fecha <= "'.$fechaf->format('Y-m-d').'"
-		GROUP BY a.grupo ORDER BY ';
+		WHERE '.$filtroTienda.$filtroArticulo.' tkd.fechasinc >= "'.$fechai->format('Y-m-d').'" and tkd.fechasinc <= "'.$fechaf->format('Y-m-d').'"
+		GROUP BY tkd.primario ORDER BY ';
 		
+		// echo $sql; exit;
 		
 		
 		if ( $agrupar ){
-			$orden=' tk.tienda ASC, cantidad DESC';
+			$orden=' t.tienda ASC, a.clavesecundaria, cantidad DESC';
 		}else{
-			$orden=' cantidad DESC';
+			$orden=' a.clavesecundaria, cantidad DESC';
 		}
 		$sql.=$orden;
 		
@@ -115,14 +122,19 @@ class Reportes extends Controlador{
 		$fechai=DateTime::createFromFormat ( 'd/m/Y' , $_REQUEST['fechai'] );
 		$fechaf=DateTime::createFromFormat ( 'd/m/Y' , $_REQUEST['fechaf'] );
 		$agrupar = ($_REQUEST['agrupar'] =='true') ? true: false;
-		$tienda = $_REQUEST['tienda'];		
-		
+		$tienda = $_REQUEST['tienda'];				
 		if ( !empty($tienda) ){
-			$filtroTienda = ' tk.tienda= '.$tienda.' AND ';
+			$filtroTienda = ' tkd.tienda= '.$tienda.' AND ';
 		}else{
 			$filtroTienda = ' ';
 		}
 		
+		$articulo = empty($_REQUEST['articulo'])? '' : $_REQUEST['articulo'];		
+		if ( !empty($articulo) ){
+			$filtroArticulo = ' tkd.descripcion LIKE "%'.$articulo.'%" AND ';
+		}else{
+			$filtroArticulo = ' ';
+		}
 		
 			$modelo=new Modelo();
 			$pdo=$modelo->getPdo();						
@@ -152,18 +164,17 @@ class Reportes extends Controlador{
 			
 			foreach($tiendas as $tiendaObj){
 				$tiendaId=$tiendaObj['clave'];
-				$filtroTienda=' tk.tienda="'.$tiendaId.'" AND ';
+				$filtroTienda=' tkd.tienda="'.$tiendaId.'" AND ';
 				
 				$sql='SELECT  t.tienda as nombreTienda,
 				g.nombre as modelo, a.clavesecundaria, sum(tkd.cantidad) as cantidad,tkd.descripcion, 
 				(tkd.cantidad * SUM(tkd.precioiva) ) as  importe
-				FROM tick_int tk
-				LEFT JOIN tick_det tkd ON tkd.clave = tk.clave  AND tkd.tienda = tk.tienda
-				LEFT JOIN tiendas t ON t.clave = tk.tienda
+				FROM tick_det tkd 
+				LEFT JOIN tiendas t ON t.clave = tkd.tienda
 				LEFT JOIN articulos a ON a.clave = tkd.primario	
 				LEFT JOIN grupos g ON g.clave = a.grupo				
-				WHERE '.$filtroTienda.' tk.fecha >= "'.$fechai->format('Y-m-d').'" and tk.fecha <= "'.$fechaf->format('Y-m-d').'"
-				GROUP BY a.grupo ORDER BY cantidad ASC limit 0,20';
+				WHERE '.$filtroTienda.$filtroArticulo.' tkd.fechasinc >= "'.$fechai->format('Y-m-d').'" and tkd.fechasinc <= "'.$fechaf->format('Y-m-d').'"
+				GROUP BY tkd.primario ORDER BY cantidad ASC, a.clavesecundaria ASC limit 0,20';
 				
 				// echo $sql; exit;
 				$sth = $pdo->query( $sql );
@@ -186,18 +197,17 @@ class Reportes extends Controlador{
 			$sql='SELECT  t.tienda as nombreTienda,
 			g.nombre as modelo, a.clavesecundaria, sum(tkd.cantidad) as cantidad,tkd.descripcion, 
 			(tkd.cantidad * SUM(tkd.precioiva) ) as  importe
-			FROM tick_int tk
-			LEFT JOIN tick_det tkd ON tkd.clave = tk.clave  AND tkd.tienda = tk.tienda
-			LEFT JOIN tiendas t ON t.clave = tk.tienda
+			FROM tick_det tkd 
+			LEFT JOIN tiendas t ON t.clave = tkd.tienda
 			LEFT JOIN articulos a ON a.clave = tkd.primario				
 			LEFT JOIN grupos g ON g.clave = a.grupo
-			WHERE '.$filtroTienda.' tk.fecha >= "'.$fechai->format('Y-m-d').'" and tk.fecha <= "'.$fechaf->format('Y-m-d').'"
-			GROUP BY a.grupo ORDER BY ';
+			WHERE '.$filtroTienda.$filtroArticulo.' tkd.fechasinc >= "'.$fechai->format('Y-m-d').'" and tkd.fechasinc <= "'.$fechaf->format('Y-m-d').'"
+			GROUP BY tkd.primario ORDER BY ';
 			
 			if ( $agrupar ){
-				$orden=' tk.tienda ASC, cantidad ASC';
+				$orden=' tkd.tienda ASC, cantidad ASC, a.clavesecundaria ASC';
 			}else{
-				$orden=' cantidad ASC';
+				$orden='  cantidad ASC, a.clavesecundaria ASC';
 			}
 			$sql.=$orden;
 			
@@ -240,11 +250,18 @@ class Reportes extends Controlador{
 		$agrupar = ($_REQUEST['agrupar'] =='true') ? true: false;
 		$tienda = $_REQUEST['tienda'];		
 		
+		$articulo = empty($_REQUEST['articulo'])? '' : $_REQUEST['articulo'];		
+		if ( !empty($articulo) ){
+			$filtroArticulo = ' tkd.descripcion LIKE "%'.$articulo.'%" AND ';
+		}else{
+			$filtroArticulo = ' ';
+		}
+		
 		$modelo=new Modelo();
 		$pdo=$modelo->getPdo();						
 			
 		if ( !empty($tienda) ){
-			$filtroTienda = ' tk.tienda= '.$tienda.' AND ';
+			$filtroTienda = ' tkd.tienda= '.$tienda.' AND ';
 		}else{
 			$filtroTienda = ' ';
 		}
@@ -275,18 +292,17 @@ class Reportes extends Controlador{
 			
 			foreach($tiendas as $tiendaObj){
 				$tiendaId=$tiendaObj['clave'];
-				$filtroTienda=' tk.tienda="'.$tiendaId.'" AND ';
+				$filtroTienda=' tkd.tienda="'.$tiendaId.'" AND ';
 				
 				$sql='SELECT  t.tienda as nombreTienda,
 				g.nombre as modelo, a.clavesecundaria, sum(tkd.cantidad) as cantidad,tkd.descripcion, 
 				(tkd.cantidad * SUM(tkd.precioiva) ) as  importe
-				FROM tick_int tk
-				LEFT JOIN tick_det tkd ON tkd.clave = tk.clave  AND tkd.tienda = tk.tienda
-				LEFT JOIN tiendas t ON t.clave = tk.tienda
+				FROM tick_det tkd 
+				LEFT JOIN tiendas t ON t.clave = tkd.tienda
 				LEFT JOIN articulos a ON a.clave = tkd.primario				
 				LEFT JOIN grupos g ON g.clave = a.grupo
-				WHERE '.$filtroTienda.' tk.fecha >= "'.$fechai->format('Y-m-d').'" and tk.fecha <= "'.$fechaf->format('Y-m-d').'"
-				GROUP BY a.grupo ORDER BY cantidad DESC limit 0,20';
+				WHERE '.$filtroTienda.$filtroArticulo.' tkd.fechasinc >= "'.$fechai->format('Y-m-d').'" and tkd.fechasinc <= "'.$fechaf->format('Y-m-d').'"
+				GROUP BY tkd.primario ORDER BY cantidad DESC limit 0,20';
 				
 				 // echo $sql; exit;
 				$sth = $pdo->query( $sql );
@@ -309,20 +325,19 @@ class Reportes extends Controlador{
 			$sql='SELECT  t.tienda as nombreTienda,
 			g.nombre as modelo, a.clavesecundaria, sum(tkd.cantidad) as cantidad,tkd.descripcion, 
 			(tkd.cantidad * SUM(tkd.precioiva) ) as  importe
-			FROM tick_int tk
-			LEFT JOIN tick_det tkd ON tkd.clave = tk.clave  AND tkd.tienda = tk.tienda
-			LEFT JOIN tiendas t ON t.clave = tk.tienda
+			FROM tick_det tkd 
+			LEFT JOIN tiendas t ON t.clave = tkd.tienda
 			LEFT JOIN articulos a ON a.clave = tkd.primario				
 			LEFT JOIN grupos g ON g.clave = a.grupo
-			WHERE '.$filtroTienda.' tk.fecha >= "'.$fechai->format('Y-m-d').'" and tk.fecha <= "'.$fechaf->format('Y-m-d').'"
-			GROUP BY a.grupo ORDER BY ';
+			WHERE '.$filtroTienda.$filtroArticulo.' tkd.fechasinc >= "'.$fechai->format('Y-m-d').'" and tkd.fechasinc <= "'.$fechaf->format('Y-m-d').'"
+			GROUP BY tkd.primario ORDER BY ';
 			
 			
 			
 			if ( $agrupar ){
-				$orden=' tk.tienda ASC, cantidad DESC';
+				$orden=' tk.tienda ASC, cantidad DESC, a.clavesecundaria ASC';
 			}else{
-				$orden=' cantidad DESC';
+				$orden='  cantidad DESC, a.clavesecundaria ASC';
 			}
 			$sql.=$orden;
 			
@@ -396,13 +411,13 @@ class Reportes extends Controlador{
 			$sql='SELECT t.tienda nombreTienda, a.clavesecundaria, a.precio1,a.nombre,a.talla FROM articulos a 
 			LEFT JOIN tiendas t ON t.clave ="'.$tiendaId.'"
 			LEFT JOIN
-				(SELECT  DISTINCT(tkd.primario) primario
-					FROM tick_int tk
-					LEFT JOIN tick_det tkd ON tkd.clave = tk.clave  AND tkd.tienda = tk.tienda		
-					WHERE   tk.fecha >= "'.$fechai->format('Y-m-d').'" and tk.fecha <= "'.$fechaf->format('Y-m-d').'" AND tk.tienda ="'.$tiendaId.'"
-					ORDER BY  primario DESC) b ON a.clave = b.primario
-			WHERE b.primario IS NULL
-			GROUP BY a.grupo';
+				(SELECT  tkd.primario primario
+					FROM tick_det tkd 
+					WHERE   tkd.fechasinc >= "'.$fechai->format('Y-m-d').'" and tkd.fechasinc <= "'.$fechaf->format('Y-m-d').'" AND tkd.tienda ="'.$tiendaId.'"
+					GROUP BY  primario DESC) b ON a.clave = b.primario
+			WHERE b.primario IS NULL limit 0,1000';
+			
+			// echo $sql; exit;
 			$sth = $pdo->query( $sql );
 				
 			if ( !$sth ) {
@@ -413,6 +428,7 @@ class Reportes extends Controlador{
 			
 			$datos=$sth->fetchAll(PDO::FETCH_ASSOC);
 			$resultados = array_merge($datos, $resultados);
+			break;
 		}
 		$res=array(
 			'success'=>true,
