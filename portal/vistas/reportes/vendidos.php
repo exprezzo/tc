@@ -61,16 +61,19 @@
 
 <?php 
 	$elMes=date('m');
+	$dia=date('d');
+	
 	$elAnio=date('Y');
 	$ultimoDia=date("d",(mktime(0,0,0,$elMes+1,1,$elAnio)-1));
+	
 	// $elAnio=date('y');
 ?>
 <div class="ui-widget-header" style="text-align:center;">
 	<div  style="display:inline-block; margin-right:20px;">	
 		<div class="inputBox" style="margin-bottom:8px;display:block;margin-left:5px;"  >
 			<label style="">Fecha:</label>
-			<input type="text" name="fechai" class="txt_fechai" value="<?php echo '1/'.$elMes.'/'.$elAnio; ?>" style="width:123px;" />
-			<input type="text" name="fechaf" class="txt_fechaf" value="<?php echo $ultimoDia.'/'.$elMes.'/'.$elAnio; ?>" style="width:123px;" />
+			<input type="text" name="fechai" class="txt_fechai" value="<?php echo $dia.$elMes.'/'.$elAnio; ?>" style="width:123px;" />
+			<input type="text" name="fechaf" class="txt_fechaf" value="<?php echo $dia.'/'.$elMes.'/'.$elAnio; ?>" style="width:123px;" />
 		</div>
 		<div class="inputBox" style="margin-bottom:8px;display:block;margin-left:10px;"  >
 			<label style="">Articulo:</label>

@@ -48,8 +48,12 @@ class Reportes extends Controlador{
 			echo 'No tiene suficientes privilegios para ver este reporte'; exit;
 		}
 				
-		$fechai=DateTime::createFromFormat ( 'd/m/Y' , $_REQUEST['fechai'] );
-		$fechaf=DateTime::createFromFormat ( 'd/m/Y' , $_REQUEST['fechaf'] );
+		// $fechai=DateTime::createFromFormat ( 'd/m/Y' , $_REQUEST['fechai'] );
+		// $fechaf=DateTime::createFromFormat ( 'd/m/Y' , $_REQUEST['fechaf'] );
+		
+		$fechai = explode('/', $_REQUEST['fechai']);
+		$fechaf = explode('/', $_REQUEST['fechaf']);
+		
 		$agrupar = ($_REQUEST['agrupar'] =='true') ? true: false;
 		$tienda = $_REQUEST['tienda'];		
 		$articulo = empty($_REQUEST['articulo'])? '' : $_REQUEST['articulo'];		
@@ -68,16 +72,17 @@ class Reportes extends Controlador{
 		
 		
 		$sql='SELECT  t.tienda as nombreTienda,
-		g.nombre as modelo, a.clavesecundaria, sum(tkd.cantidad) as cantidad,tkd.descripcion, 
-		(tkd.cantidad * SUM(tkd.precioiva) ) as  importe
+		g.nombre as modelo, a.clavesecundaria, sum(tkd.cantidad) as cantidad, tkd.descripcion, 
+		SUM(tkd.cantidad * tkd.precioiva) as  importe, SUM( if (  SUBSTRING(apartado,1,1)="A", tkd.cantidad * tkd.precioiva, 0 ))  as apartado,
+		SUM( if (SUBSTRING(apartado,1,1)="A", 0, tkd.cantidad * tkd.precioiva ))  as noapartado
 		FROM tick_det tkd 
 		LEFT JOIN tiendas t ON t.clave = tkd.tienda
 		LEFT JOIN articulos a ON a.clave = tkd.primario				
-		LEFT JOIN grupos g ON g.clave = a.grupo
-		WHERE '.$filtroTienda.$filtroArticulo.' tkd.fechasinc >= "'.$fechai->format('Y-m-d').'" and tkd.fechasinc <= "'.$fechaf->format('Y-m-d').'"
+		LEFT JOIN grupos g ON g.clave = a.grupo		
+		WHERE '.$filtroTienda.$filtroArticulo.' tkd.fechaventa >= "'.$fechai[2].'-'.$fechai[1].'-'.$fechai[0].' 00:00:00" and tkd.fechaventa <= "'.$fechaf[2].'-'.$fechaf[1].'-'.$fechaf[0].' 23:59:59" 
 		GROUP BY tkd.primario ORDER BY ';
 		
-		// echo $sql; exit;
+		  // echo $sql; exit;
 		
 		
 		if ( $agrupar ){
@@ -119,8 +124,12 @@ class Reportes extends Controlador{
 		if ( empty($_SESSION) || empty($_SESSION['isLoged']) || !( $_SESSION['userInfo']['rol']==1 || $_SESSION['userInfo']['rol']==2 || $_SESSION['userInfo']['rol']==3)  ) {
 			echo 'No tiene suficientes privilegios para ver este reporte'; exit;
 		}
-		$fechai=DateTime::createFromFormat ( 'd/m/Y' , $_REQUEST['fechai'] );
-		$fechaf=DateTime::createFromFormat ( 'd/m/Y' , $_REQUEST['fechaf'] );
+		// $fechai=DateTime::createFromFormat ( 'd/m/Y' , $_REQUEST['fechai'] );
+		// $fechaf=DateTime::createFromFormat ( 'd/m/Y' , $_REQUEST['fechaf'] );
+		
+		$fechai = explode('/', $_REQUEST['fechai']);
+		$fechaf = explode('/', $_REQUEST['fechaf']);
+		
 		$agrupar = ($_REQUEST['agrupar'] =='true') ? true: false;
 		$tienda = $_REQUEST['tienda'];				
 		if ( !empty($tienda) ){
@@ -172,8 +181,8 @@ class Reportes extends Controlador{
 				FROM tick_det tkd 
 				LEFT JOIN tiendas t ON t.clave = tkd.tienda
 				LEFT JOIN articulos a ON a.clave = tkd.primario	
-				LEFT JOIN grupos g ON g.clave = a.grupo				
-				WHERE '.$filtroTienda.$filtroArticulo.' tkd.fechasinc >= "'.$fechai->format('Y-m-d').'" and tkd.fechasinc <= "'.$fechaf->format('Y-m-d').'"
+				LEFT JOIN grupos g ON g.clave = a.grupo								
+				WHERE '.$filtroTienda.$filtroArticulo.' tkd.fechaventa >= "'.$fechai[2].'-'.$fechai[1].'-'.$fechai[0].' 00:00:00" and tkd.fechaventa <= "'.$fechaf[2].'-'.$fechaf[1].'-'.$fechaf[0].' 23:59:59" 
 				GROUP BY tkd.primario ORDER BY cantidad ASC, a.clavesecundaria ASC limit 0,20';
 				
 				// echo $sql; exit;
@@ -200,8 +209,8 @@ class Reportes extends Controlador{
 			FROM tick_det tkd 
 			LEFT JOIN tiendas t ON t.clave = tkd.tienda
 			LEFT JOIN articulos a ON a.clave = tkd.primario				
-			LEFT JOIN grupos g ON g.clave = a.grupo
-			WHERE '.$filtroTienda.$filtroArticulo.' tkd.fechasinc >= "'.$fechai->format('Y-m-d').'" and tkd.fechasinc <= "'.$fechaf->format('Y-m-d').'"
+			LEFT JOIN grupos g ON g.clave = a.grupo			
+			WHERE '.$filtroTienda.$filtroArticulo.' tkd.fechaventa >= "'.$fechai[2].'-'.$fechai[1].'-'.$fechai[0].' 00:00:00" and tkd.fechaventa <= "'.$fechaf[2].'-'.$fechaf[1].'-'.$fechaf[0].' 23:59:59" 
 			GROUP BY tkd.primario ORDER BY ';
 			
 			if ( $agrupar ){
@@ -245,8 +254,13 @@ class Reportes extends Controlador{
 		if ( empty($_SESSION) || empty($_SESSION['isLoged']) || !( $_SESSION['userInfo']['rol']==1 || $_SESSION['userInfo']['rol']==2 || $_SESSION['userInfo']['rol']==3)  ) {
 			echo 'No tiene suficientes privilegios para ver este reporte'; exit;
 		}
-		$fechai=DateTime::createFromFormat ( 'd/m/Y' , $_REQUEST['fechai'] );
-		$fechaf=DateTime::createFromFormat ( 'd/m/Y' , $_REQUEST['fechaf'] );
+		
+		// $fechai=DateTime::createFromFormat ( 'd/m/Y' , $_REQUEST['fechai'] );
+		// $fechaf=DateTime::createFromFormat ( 'd/m/Y' , $_REQUEST['fechaf'] );
+		
+		$fechai = explode('/', $_REQUEST['fechai']);
+		$fechaf = explode('/', $_REQUEST['fechaf']);
+		
 		$agrupar = ($_REQUEST['agrupar'] =='true') ? true: false;
 		$tienda = $_REQUEST['tienda'];		
 		
@@ -300,8 +314,8 @@ class Reportes extends Controlador{
 				FROM tick_det tkd 
 				LEFT JOIN tiendas t ON t.clave = tkd.tienda
 				LEFT JOIN articulos a ON a.clave = tkd.primario				
-				LEFT JOIN grupos g ON g.clave = a.grupo
-				WHERE '.$filtroTienda.$filtroArticulo.' tkd.fechasinc >= "'.$fechai->format('Y-m-d').'" and tkd.fechasinc <= "'.$fechaf->format('Y-m-d').'"
+				LEFT JOIN grupos g ON g.clave = a.grupo				
+				WHERE '.$filtroTienda.$filtroArticulo.' tkd.fechaventa >= "'.$fechai[2].'-'.$fechai[1].'-'.$fechai[0].' 00:00:00" and tkd.fechaventa <= "'.$fechaf[2].'-'.$fechaf[1].'-'.$fechaf[0].' 23:59:59" 
 				GROUP BY tkd.primario ORDER BY cantidad DESC limit 0,20';
 				
 				 // echo $sql; exit;
@@ -328,11 +342,9 @@ class Reportes extends Controlador{
 			FROM tick_det tkd 
 			LEFT JOIN tiendas t ON t.clave = tkd.tienda
 			LEFT JOIN articulos a ON a.clave = tkd.primario				
-			LEFT JOIN grupos g ON g.clave = a.grupo
-			WHERE '.$filtroTienda.$filtroArticulo.' tkd.fechasinc >= "'.$fechai->format('Y-m-d').'" and tkd.fechasinc <= "'.$fechaf->format('Y-m-d').'"
+			LEFT JOIN grupos g ON g.clave = a.grupo			
+			WHERE '.$filtroTienda.$filtroArticulo.' tkd.fechaventa >= "'.$fechai[2].'-'.$fechai[1].'-'.$fechai[0].' 00:00:00" and tkd.fechaventa <= "'.$fechaf[2].'-'.$fechaf[1].'-'.$fechaf[0].' 23:59:59" 
 			GROUP BY tkd.primario ORDER BY ';
-			
-			
 			
 			if ( $agrupar ){
 				$orden=' tk.tienda ASC, cantidad DESC, a.clavesecundaria ASC';
@@ -377,8 +389,11 @@ class Reportes extends Controlador{
 		if ( empty($_SESSION) || empty($_SESSION['isLoged']) || !( $_SESSION['userInfo']['rol']==1 || $_SESSION['userInfo']['rol']==2 || $_SESSION['userInfo']['rol']==3)  ) {
 			echo 'No tiene suficientes privilegios para ver este reporte'; exit;
 		}
-		$fechai=DateTime::createFromFormat ( 'd/m/Y' , $_REQUEST['fechai'] );
-		$fechaf=DateTime::createFromFormat ( 'd/m/Y' , $_REQUEST['fechaf'] );
+		// $fechai=DateTime::createFromFormat ( 'd/m/Y' , $_REQUEST['fechai'] );
+		// $fechaf=DateTime::createFromFormat ( 'd/m/Y' , $_REQUEST['fechaf'] );
+		$fechai = explode('/', $_REQUEST['fechai']);
+		$fechaf = explode('/', $_REQUEST['fechaf']);
+		
 		$agrupar = ($_REQUEST['agrupar'] =='true') ? true: false;
 		$tienda = $_REQUEST['tienda'];		
 		
@@ -412,9 +427,9 @@ class Reportes extends Controlador{
 			LEFT JOIN tiendas t ON t.clave ="'.$tiendaId.'"
 			LEFT JOIN
 				(SELECT  tkd.primario primario
-					FROM tick_det tkd 
-					WHERE   tkd.fechasinc >= "'.$fechai->format('Y-m-d').'" and tkd.fechasinc <= "'.$fechaf->format('Y-m-d').'" AND tkd.tienda ="'.$tiendaId.'"
-					GROUP BY  primario DESC) b ON a.clave = b.primario
+					FROM tick_det tkd 				
+					WHERE   tkd.fechaventa >= "'.$fechai[2].'-'.$fechai[1].'-'.$fechai[0].' 00:00:00" and tkd.fechaventa <= "'.$fechaf[2].'-'.$fechaf[1].'-'.$fechaf[0].' 23:59:59" 
+					AND tkd.tienda ="'.$tiendaId.'" GROUP BY  primario DESC) b ON a.clave = b.primario
 			WHERE b.primario IS NULL limit 0,1000';
 			
 			// echo $sql; exit;

@@ -32,8 +32,8 @@ if ( !isset($_SESSION['isLoged'])|| $_SESSION['isLoged']!=true ){
 	<link href="<?php echo $_APP_PATH; ?>web/libs/Wijmo.2.3.2/Wijmo-Open/css/jquery.wijmo-open.2.3.2.css" rel="stylesheet" type="text/css" />			
 	<!--link href="/css/themes/blitzer/jquery-ui-1.9.2.custom.css" rel="stylesheet"-->	
 	<!--Wijmo Widgets JavaScript-->
-	<script src="<?php echo $_APP_PATH; ?>web/libs/Wijmo.2.3.2/Wijmo-Complete/js/jquery.wijmo-complete.all.2.3.2.js" type="text/javascript"></script>
-	<script src="<?php echo $_APP_PATH; ?>web/libs/Wijmo.2.3.2/Wijmo-Open/js/jquery.wijmo-open.all.2.3.2.js" type="text/javascript"></script>		
+	<script src="<?php echo $_APP_PATH; ?>web/libs/Wijmo.2.3.2/Wijmo-Complete/js/jquery.wijmo-complete.all.2.3.2.min.js" type="text/javascript"></script>
+	<script src="<?php echo $_APP_PATH; ?>web/libs/Wijmo.2.3.2/Wijmo-Open/js/jquery.wijmo-open.all.2.3.2.min.js" type="text/javascript"></script>		
 	<!-- Gritter -->
 	<link href="<?php echo $_APP_PATH; ?>web/libs/Gritter-master/css/jquery.gritter.css" rel="stylesheet" type="text/css" />
 	<script src="<?php echo $_APP_PATH; ?>web/libs/Gritter-master/js/jquery.gritter.min.js" type="text/javascript"></script>

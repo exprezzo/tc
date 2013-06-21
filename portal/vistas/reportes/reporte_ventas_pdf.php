@@ -30,7 +30,8 @@ class ReporteVentasPdf extends fpdf{
 		
 		$piezas=0;
 		$importeTot=0;
-		
+		$totApartados=0;
+		$totNoApartados=0;
 		foreach($this->res['datos'] as $row)
 		 {			
 			foreach($this->columns as $col){
@@ -43,6 +44,10 @@ class ReporteVentasPdf extends fpdf{
 					$piezas+=$val;
 				}else if ($di == 'importe'){
 					$importeTot+=$val;
+				}else if ($di == 'apartado'){
+					$totApartados+=$val;
+				}else if ($di == 'noapartado'){
+					$totNoApartados+=$val;
 				}
 				
 				if ( $this->agrupar && $di == $groupDataIndex ){
@@ -57,31 +62,38 @@ class ReporteVentasPdf extends fpdf{
 				}else{
 					$this->SetFont('Courier','',12);
 					$align=empty( $col['align'] ) ? '' : $col['align'];				
-					if ($di == 'importe'){
+					if ($di == 'importe' || $di == 'apartado' || $di == 'noapartado'){
 						$val ='$'.number_format($val,2,'.',',');
 					}
 					$this->Cell($w,6,$val,1,0,$align);
-				}			
+				}
 			}
-				
 			$this->Ln();
 		}
 		
 		$gw= empty( $this->columns[$idxAgrupados]['width']) ? 40:$this->columns[$idxAgrupados]['width'];			
 		$wTotal = ( $this->agrupar )? $tw : $tw +  $gw;
-		$importeTot = number_format($importeTot,2,'.',',');
 		
-		$this->cell( $wTotal, 6, 'Total General:  $'.$importeTot,0,0,'R');
+		$importeTot = number_format($importeTot,2,'.',',');		
+		$this->cell( $wTotal, 6, 'General:  $'.$importeTot,0,1,'R');
+		
+		$totApartados = number_format($totApartados,2,'.',',');		
+		$this->cell( $wTotal, 6, 'Apartados:  $'.$totApartados,0,1,'R');
+		
+		$totNoApartados = number_format($totNoApartados,2,'.',',');		
+		$this->cell( $wTotal, 6, 'Ventas:  $'.$totNoApartados,0,0,'R');
+		
 	}
 
 
 	function Header()
 	{
 		$this->SetFont('Courier','',16);
-		$this->Cell(40,10,'QUE SE VENDE MAS EN TODAS LAS TIENDAS',0,1);
-		$this->Cell(79,10,'Totalizado por Modelo.',0,0);		
-		
+		$this->Cell(40,10,'Vendidos',0,0);
 		$this->SetFont('Courier','',14);
+		$this->Cell(79,10,'Totalizado por Articulo.',0,1);		
+		
+		
 		$this->Cell(30,10, ' Fechas: ',0,0,'',0);
 		
 		setlocale(LC_TIME, 'spanish');
@@ -89,13 +101,22 @@ class ReporteVentasPdf extends fpdf{
 		
 		
 		
-		$diai=$this->fechai->format('d');
-		$mesi= strftime('%b', $this->fechai->getTimestamp() );
-		$añoi=$this->fechai->format('Y');
+		// $diai=$this->fechai->format('d');
+		// $mesi= strftime('%b', $this->fechai->getTimestamp() );
+		// $añoi=$this->fechai->format('Y');
 		
-		$diaf=$this->fechaf->format('d');
-		$mesf= strftime('%b', $this->fechaf->getTimestamp() );
-		$añof=$this->fechaf->format('Y');
+		$diai=$this->fechai[2];
+		$mesi=$this->fechai[1];
+		$añoi=$this->fechai[0];
+		
+		// $diaf=$this->fechaf->format('d');
+		// $mesf= strftime('%b', $this->fechaf->getTimestamp() );
+		// $añof=$this->fechaf->format('Y');
+		
+		$diaf=$this->fechaf[2];
+		$mesf=$this->fechaf[1];
+		$añof=$this->fechaf[0];
+		
 		
 		$this->Cell(100,10, ' '."$diai/$mesi/$añoi".' -  '."$diaf/$mesf/$añof",0,1,'',0);
 		
@@ -135,25 +156,38 @@ class ReporteVentasPdf extends fpdf{
 			array(		
 				'header'=>'Clave',
 				'dataIndex'=>'clavesecundaria',
-				'width'=>50
+				'width'=>47
 			),
 			array(		
-				'header'=>'Cantidad',
+				'header'=>'Cant.',
 				'dataIndex'=>'cantidad',
-				'width'=>30,
+				'width'=>15,
 				'align'=>'R'
 			),			
 			array(		
 				'header'=>'Descripcion',
 				'dataIndex'=>'descripcion',
-				'width'=>130
+				'width'=>127
 			),
 			array(		
 				'header'=>'Importe',
 				'dataIndex'=>'importe',
-				'width'=>25,
+				'width'=>24,
+				'align'=>'R'
+			),			
+			array(		
+				'header'=>'Apartado',
+				'dataIndex'=>'apartado',
+				'width'=>24,
+				'align'=>'R'
+			),			
+			array(		
+				'header'=>'Ventas',
+				'dataIndex'=>'noapartado',
+				'width'=>24,
 				'align'=>'R'
 			)
+			
 		);
 		
 		

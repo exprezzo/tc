@@ -88,13 +88,21 @@ class ReporteUltimos20Pdf extends fpdf{
 		
 		
 		
-		$diai=$this->fechai->format('d');
-		$mesi= strftime('%b', $this->fechai->getTimestamp() );
-		$añoi=$this->fechai->format('Y');
+		// $diai=$this->fechai->format('d');
+		// $mesi= strftime('%b', $this->fechai->getTimestamp() );
+		// $añoi=$this->fechai->format('Y');
 		
-		$diaf=$this->fechaf->format('d');
-		$mesf= strftime('%b', $this->fechaf->getTimestamp() );
-		$añof=$this->fechaf->format('Y');
+		$diai=$this->fechai[2];
+		$mesi=$this->fechai[1];
+		$añoi=$this->fechai[0];
+		
+		// $diaf=$this->fechaf->format('d');
+		// $mesf= strftime('%b', $this->fechaf->getTimestamp() );
+		// $añof=$this->fechaf->format('Y');
+		
+		$diaf=$this->fechaf[2];
+		$mesf=$this->fechaf[1];
+		$añof=$this->fechaf[0];
 		
 		$this->Cell(100,10, ' '."$diai/$mesi/$añoi".' -  '."$diaf/$mesf/$añof",0,1,'',0);
 		
