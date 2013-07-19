@@ -18,7 +18,9 @@
 	#accordion div{
 		text-align:center;
 	}
-	
+	img {
+		border: none;
+	}
 	
 </style>
 

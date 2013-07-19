@@ -26,9 +26,10 @@
 				url+='&articulo='+articulo;
 			}
 			
-			$(tabid+' .pdfReader').attr('data',url);
+			$('<object class="pdfReader" data="'+url+'" type="application/pdf" width="100%" height="93%" style="">').appendTo( $(tabid +' .pdfContainer').empty() );
+			// $(tabid+' .pdfReader').attr('data',url);
 			//http://stackoverflow.com/questions/10366867/object-tag-doesnt-refresh-when-its-data-attribute-is-changed-in-chrome
-			$(tabid+' .pdfReader').load(url);
+			// $(tabid+' .pdfReader').load(url);
 			
 			var ht = $('#tabs [role="tablist"]').height();		
 			var hh = $(tabid + ' .ui-widget-header').height();					
@@ -102,7 +103,7 @@
 		</div>
 	</div>
 </div>
-<div>
+<div class="pdfContainer">
 	<object class="pdfReader" data="<?php echo $_APP_PATH; ?>web/blanco.pdf" type="application/pdf" width="100%" height="93%">
 		alt : <a href="#"></a>
 	</object>

@@ -13,6 +13,7 @@ if ( !isset($_SESSION['isLoged'])|| $_SESSION['isLoged']!=true ){
 	<script src="<?php echo $_APP_PATH; ?>web/libs/jquery-1.8.3.js"></script>
 	<script src="<?php echo $_APP_PATH; ?>web/libs/jquery-ui-1.9.2.custom/jquery-ui-1.9.2.custom.js"></script>  
 	
+	
 	<!--Theme-->
 	
 	<?php 

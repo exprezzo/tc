@@ -40,7 +40,164 @@ class Reportes extends Controlador{
 		$res  =$tiendaMod->buscar( array() );				
 		$vista=$this->getVista();
 		$vista->tiendas = $res['datos'];
+		
+		//------------------
+		$elMes=date('m');
+		$dia=date('d');		
+		$elAnio=date('Y');
+		
+		
+		 $_REQUEST['paging']['fechai'] = $dia.'/'.$elMes.'/'.$elAnio; 
+		 $_REQUEST['paging']['fechaf'] = $dia.'/'.$elMes.'/'.$elAnio; 
+		 $_REQUEST['paging']['agrupar']='true';
+		 $_REQUEST['paging']['tienda']='';
+		 $_REQUEST['paging']['pageIndex']=1;
+		 $_REQUEST['paging']['pageSize']=11;
+		//------------------
+		
+		$datos = $this->vendidosJson(false);
+		$vista->datos = $datos['datos'];
+		$vista->apartados = $datos['apartados'];
+		$vista->vendidos = $datos['vendidos'];
+		$vista->importe = $datos['importe'];
 		$vista->mostrar();
+	}
+	
+	function vendidoshtml(){
+		$tiendaMod = new TiendaModelo();
+		$res  =$tiendaMod->buscar( array() );				
+		$vista=$this->getVista();
+		$vista->tiendas = $res['datos'];
+		
+		//------------------
+		$elMes=date('m');
+		$dia=date('d');		
+		$elAnio=date('Y');
+		
+		
+		 $_REQUEST['paging']['fechai'] = $dia.'/'.$elMes.'/'.$elAnio; 
+		 $_REQUEST['paging']['fechaf'] = $dia.'/'.$elMes.'/'.$elAnio; 
+		 $_REQUEST['paging']['agrupar']='true';
+		 $_REQUEST['paging']['tienda']='';
+		 $_REQUEST['paging']['pageIndex']=1;
+		 $_REQUEST['paging']['pageSize']=13;
+		//------------------
+		
+		$datos = $this->vendidosJson(false);
+		$vista->datos = $datos['datos'];
+		$vista->apartados = $datos['apartados'];
+		$vista->vendidos = $datos['vendidos'];
+		$vista->importe = $datos['importe'];
+		$vista->mostrar('/vendidos_grid');
+	}
+	function vendidosJson($imprimir=true){			
+		if ( empty($_SESSION) || empty($_SESSION['isLoged']) || !( $_SESSION['userInfo']['rol']==1 || $_SESSION['userInfo']['rol']==2 || $_SESSION['userInfo']['rol']==3)  ) {
+			echo 'No tiene suficientes privilegios para ver este reporte'; exit;
+		}
+		
+		// $fechai=DateTime::createFromFormat ( 'd/m/Y' , $_REQUEST['fechai'] );
+		// $fechaf=DateTime::createFromFormat ( 'd/m/Y' , $_REQUEST['fechaf'] );
+		
+		$fechai = explode('/', $_REQUEST['paging']['fechai']);
+		$fechaf = explode('/', $_REQUEST['paging']['fechaf']);
+		
+		$agrupar = ($_REQUEST['paging']['agrupar'] =='true') ? true: false;
+		$tienda = $_REQUEST['paging']['tienda'];		
+		$articulo = empty($_REQUEST['paging']['articulo'])? '' : $_REQUEST['paging']['articulo'];		
+		
+		$filtroArticulo = empty($articulo) ?  ' ' : ' tkd.descripcion LIKE "%'.$articulo.'%" AND ' ;		
+		$filtroTienda =  empty($tienda)? ' ' : ' tkd.tienda= '.$tienda.' AND ';		
+		
+		$start = ($_REQUEST['paging']['pageIndex'] ) * $_REQUEST['paging']['pageSize'];		
+		$limit = $_REQUEST['paging']['pageSize'];		
+		
+		$modelo=new Modelo();
+		$pdo=$modelo->getPdo();						
+		
+		$sql='SELECT  count(tkd.primario) as total,
+		SUM(tkd.cantidad * tkd.precioiva) as  importe, SUM( if (  SUBSTRING(apartado,1,1)="A", tkd.cantidad * tkd.precioiva, 0 ))  as apartado,
+		SUM( if (SUBSTRING(apartado,1,1)="A", 0, tkd.cantidad * tkd.precioiva ))  as noapartado
+		FROM tick_det tkd 
+		LEFT JOIN tiendas t ON t.clave = tkd.tienda
+		LEFT JOIN articulos a ON a.clave = tkd.primario				
+		LEFT JOIN grupos g ON g.clave = a.grupo		
+		WHERE '.
+		$filtroTienda.$filtroArticulo.' tkd.fechaventa >= "'.$fechai[2].'-'.$fechai[1].'-'.$fechai[0].' 00:00:00" and tkd.fechaventa <= "'.
+		$fechaf[2].'-'.$fechaf[1].'-'.$fechaf[0].' 23:59:59"';
+		
+		 // echo $sql; exit;
+		
+		$sth = $pdo->query( $sql );
+				
+		if ( !$sth ) {
+			$res=$modelo->getError(  );
+			print_r( $res );
+			exit;
+		}
+		
+		$datos=$sth->fetchAll(PDO::FETCH_ASSOC);
+		$total=$datos[0]['total'];
+		
+		
+		
+		$importe='$'.number_format($datos[0]['importe'], 2, '.', ','); 
+		$apartados='$'.number_format($datos[0]['apartado'], 2, '.', ','); 
+		$vendidos='$'.number_format($datos[0]['noapartado'], 2, '.', ','); 
+		
+		
+		
+		$sql='SELECT  t.tienda as nombreTienda,
+		g.nombre as modelo, a.clavesecundaria, sum(tkd.cantidad) as cantidad, tkd.descripcion, 
+		SUM(tkd.cantidad * tkd.precioiva) as  importe, SUM( if (  SUBSTRING(apartado,1,1)="A", tkd.cantidad * tkd.precioiva, 0 ))  as apartado,
+		SUM( if (SUBSTRING(apartado,1,1)="A", 0, tkd.cantidad * tkd.precioiva ))  as noapartado
+		FROM tick_det tkd 
+		LEFT JOIN tiendas t ON t.clave = tkd.tienda
+		LEFT JOIN articulos a ON a.clave = tkd.primario				
+		LEFT JOIN grupos g ON g.clave = a.grupo		
+		WHERE '.$filtroTienda.$filtroArticulo.' tkd.fechaventa >= "'.$fechai[2].'-'.$fechai[1].'-'.$fechai[0].' 00:00:00" and tkd.fechaventa <= "'.$fechaf[2].'-'.$fechaf[1].'-'.$fechaf[0].' 23:59:59" 
+		GROUP BY tkd.primario ORDER BY ';
+		
+		  // echo $sql; exit;
+		
+		
+		if ( $agrupar ){
+			$orden=' t.tienda ASC, a.clavesecundaria, cantidad DESC LIMIT '.$start.', '.$limit;
+		}else{
+			$orden=' a.clavesecundaria, cantidad DESC LIMIT '.$start.', '.$limit;
+		}
+		$sql.=$orden;
+		
+		 // echo $sql; exit;
+		
+		$sth = $pdo->query( $sql );
+				
+		if ( !$sth ) {
+			$res=$modelo->getError(  );
+			print_r( $res );
+			exit;
+		}
+		
+		$res=array(
+			'success'	=> true,
+			'datos'		=> $sth->fetchAll(PDO::FETCH_ASSOC),
+			'importe'	=> $importe,
+			'apartados'	=> $apartados,
+			'vendidos'	=> $vendidos
+		);	
+		
+		if ($imprimir){
+			$resp = array(
+				'success'=>$res['success'],
+				// 'msg'=>$res['msg'],
+				'totalRows'=>$total,
+				'rows'=>$res['datos'],
+				'importe'	=> $importe,
+				'apartados'	=> $apartados,
+				'vendidos'	=> $vendidos
+			);
+			echo json_encode( $resp );
+		}
+		return $res;
 	}
 	
 	function vendidosPdf(){			
@@ -177,7 +334,7 @@ class Reportes extends Controlador{
 				
 				$sql='SELECT  t.tienda as nombreTienda,
 				g.nombre as modelo, a.clavesecundaria, sum(tkd.cantidad) as cantidad,tkd.descripcion, 
-				(tkd.cantidad * SUM(tkd.precioiva) ) as  importe
+				SUM(tkd.cantidad * tkd.precioiva) as  importe
 				FROM tick_det tkd 
 				LEFT JOIN tiendas t ON t.clave = tkd.tienda
 				LEFT JOIN articulos a ON a.clave = tkd.primario	
@@ -310,7 +467,7 @@ class Reportes extends Controlador{
 				
 				$sql='SELECT  t.tienda as nombreTienda,
 				g.nombre as modelo, a.clavesecundaria, sum(tkd.cantidad) as cantidad,tkd.descripcion, 
-				(tkd.cantidad * SUM(tkd.precioiva) ) as  importe
+				SUM(tkd.cantidad * tkd.precioiva ) as  importe
 				FROM tick_det tkd 
 				LEFT JOIN tiendas t ON t.clave = tkd.tienda
 				LEFT JOIN articulos a ON a.clave = tkd.primario				

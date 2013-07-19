@@ -20,23 +20,31 @@
 
 </style>
 <div style="padding:10px;" class="menuReportes">	
+	<div>
 	<h1>Reportes</h1>
-	<a tablink="true" href="<?php echo $_APP_PATH.'portal'; ?>/reportes/vendidos" titulo="Vendidos">
-		<img src="http://png.findicons.com/files/icons/2389/web_icon_pack/65/bluestyle_09_star.png">		 
-		<div>Vendidos</div>
-	</a>
-	<a tablink="true" href="<?php echo $_APP_PATH.'portal'; ?>/reportes/top20" titulo="Top 20">
-		<img src="http://png.findicons.com/files/icons/2389/web_icon_pack/65/greenstyle_09_star.png">		 
-		<div>Top 20</div>
-	</a>	
-	<a tablink="true" href="<?php echo $_APP_PATH.'portal'; ?>/reportes/ultimos20" titulo="Ultimos 20">
-		<img src="http://png.findicons.com/files/icons/2389/web_icon_pack/65/redstyle_09_star.png">		 
-		<div>Ultimos 20</div>
-	</a>
-	<a tablink="true" href="<?php echo $_APP_PATH.'portal'; ?>/reportes/novendidos" titulo="No Vendidos">
-		<img src="http://png.findicons.com/files/icons/2389/web_icon_pack/65/blackstyle_09_star.png">		          
-		<div>No vendidos</div>
-	</a>
+		<a tablink="true" href="<?php echo $_APP_PATH.'portal'; ?>/reportes/vendidos" titulo="Vendidos">
+			<img src="http://png.findicons.com/files/icons/2389/web_icon_pack/65/bluestyle_09_star.png">		 
+			<div>Vendidos</div>
+		</a>
+		<a tablink="true" href="<?php echo $_APP_PATH.'portal'; ?>/reportes/top20" titulo="Top 20">
+			<img src="http://png.findicons.com/files/icons/2389/web_icon_pack/65/greenstyle_09_star.png">		 
+			<div>Top 20</div>
+		</a>	
+		<a tablink="true" href="<?php echo $_APP_PATH.'portal'; ?>/reportes/ultimos20" titulo="Ultimos 20">
+			<img src="http://png.findicons.com/files/icons/2389/web_icon_pack/65/redstyle_09_star.png">		 
+			<div>Ultimos 20</div>
+		</a>
+		<a tablink="true" href="<?php echo $_APP_PATH.'portal'; ?>/reportes/novendidos" titulo="No Vendidos">
+			<img src="http://png.findicons.com/files/icons/2389/web_icon_pack/65/blackstyle_09_star.png">		          
+			<div>No vendidos</div>
+		</a>
+	</div>
+	<div>
+		<a tablink="true" href="<?php echo $_APP_PATH.'portal'; ?>/reportes/vendidoshtml" titulo="Vendidos">
+			<img src="http://png.findicons.com/files/icons/2389/web_icon_pack/65/bluestyle_09_star.png">		 
+			<div>Vendidos Html</div>
+		</a>
+	</div>
 </div>
 
 
