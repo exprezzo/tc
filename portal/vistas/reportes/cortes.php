@@ -6,7 +6,10 @@
 		$(tabid + ' [name="fechai"]').wijinputdate({showTrigger:true,dateFormat:'dd/MM/yyyy'});
 		// $(tabid + ' [name="fechaf"]').wijinputdate({showTrigger:true,dateFormat:'dd/MM/yyyy'});
 		$(tabid + ' [name="tienda"]').wijcombobox();
-		// $(tabid + ' [name="articulo"]').wijtextbox();
+		 $(tabid + ' .numeros input').wijinputnumber({
+            type: 'currency',            
+            decimalPlaces: 2            
+        });
 		// $(tabid + ' [name="agrupar"]').wijcheckbox({checked: true});
 		
 		
@@ -37,7 +40,9 @@
 			   $.each( resp.datos, function( key, value ) {
 					elemento = $(tabid + ' input[name="'+key+'"]');
 					if (elemento.length== 1){
-						elemento.val(value);
+						// $(elemento).val(value);
+						if ( value==null ) value=0;
+						elemento.wijinputnumber('setValue',value);
 					}
 					// console.log("elemento"); console.log(elemento);
 				  // alert( key + ": " + value );
@@ -78,7 +83,7 @@
 	<div  style="display:inline-block; margin-right:20px;">
 		<div class="inputBox" style="margin-bottom:8px;display:block;margin-left:5px;"  >
 			<label style="">Fecha:</label>
-			<input type="text" name="fechai" class="txt_fechai" value="<?php echo '01/'.$elMes.'/'.$elAnio; ?>" style="width:123px;" />			
+			<input type="text" name="fechai" class="txt_fechai" value="<?php echo $dia.'/'.$elMes.'/'.$elAnio; ?>" style="width:123px;" />			
 		</div>
 		<div class="inputBox tiendas" style="margin-bottom:8px;display:block;margin-left:10px;"  >
 			<label style="">Tienda:</label>

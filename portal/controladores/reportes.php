@@ -100,6 +100,7 @@ class Reportes extends Controlador{
 		
 		$sql='SELECT * FROM CorteCaja WHERE fecha = "'.$fechai[2].'-'.$fechai[1].'-'.$fechai[0].'" AND tienda = '.$tienda.' and estatus=0';
 		
+		// echo $sql; exit;
 		$mod=new Modelo();
 		$pdo=$mod->getPdo();
 		$sth = $pdo->query( $sql );
