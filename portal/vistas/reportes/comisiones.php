@@ -5,9 +5,7 @@
 		
 		$(tabid + ' [name="fechai"]').wijinputdate({showTrigger:true,dateFormat:'dd/MM/yyyy'});
 		$(tabid + ' [name="fechaf"]').wijinputdate({showTrigger:true,dateFormat:'dd/MM/yyyy'});
-		$(tabid + ' [name="tienda"]').wijcombobox();
-		// $(tabid + ' [name="articulo"]').wijtextbox();
-		// $(tabid + ' [name="agrupar"]').wijcheckbox({checked: true});
+		$(tabid + ' [name="tienda"]').wijcombobox();		
 		
 		var campos=[
 			 { name: "nombreTienda"  },
@@ -37,25 +35,11 @@
 				data.data.paging.fechaf=$(tabid + ' [name="fechaf"]').val();
 				data.data.paging.tienda=$(tabid + ' [name="tienda"]').val();
 				var articulo=$(tabid + ' [name="articulo"]').val();	
-				// data.data.paging.agrupar=$(tabid +' [name="agrupar"]').prop('checked');					
+				
 				if (articulo!=''){
 					data.data.paging.articulo=articulo;
 				}
-				// console.log("data.data"); console.log(data.data);
-				// data.data.paging.push(params);
-				// data.data.filtering.push({
-					// field: 'fecha',
-					// dataKey:'fecha_i',
-					// filterOperator:'greaterorequal',
-					// filterValue:$(me.tabId + ' [name="fecha_i"]').val()
-				// });
 				
-				// data.data.filtering.push({
-					// field: 'fecha',
-					// dataKey:'fecha_f',
-					// filterOperator:'lessorequal',
-					// filterValue:$(me.tabId + ' [name="fecha_f"]').val()
-				// });
 			}
 		});
 				
@@ -70,15 +54,14 @@
 		
 		var columnasAgrupadas=[
 			{ headerText: "Tienda", dataIndex:'nombreTienda', visible:false, groupInfo: { groupSingleRow: true, position:'header' }  },
-			{ headerText: "vendedor", dataIndex:'vendedor_nombre',visible:true },
+			{ headerText: "Vendedor", dataIndex:'vendedor_nombre',visible:true },
 			{ headerText: "Importe",dataIndex:'importe' },
-			{ headerText: "apartado",dataIndex:'apartado' },
-			{ headerText: "ventas",dataIndex:'ventas' }
+			{ headerText: "Apartado",dataIndex:'apartado' },
+			{ headerText: "Ventas",dataIndex:'ventas' }
 		];
 		
 		$(tabid + ' .tabla_reporte').wijgrid({
-			data:dataSource,
-			// ensureColumnsPxWidth :true,
+			data:dataSource,			
 			allowPaging: true,
 			rendered : function (e) {
 				var h = $(tabid).height();
@@ -138,7 +121,6 @@
 			<select name="tienda" class="txt_tienda" style="">				
 				<?php
 					echo '<option value="0" selected>TODAS</option>';
-					// $rolId = $this->datos['rol'];						
 					
 					foreach($this->tiendas as $obj){					
 						echo '<option  value="'.$obj['clave'].'">'.$obj['tienda'].'</option>';					
@@ -163,5 +145,3 @@
 		</tbody>
 	</table>
 </div>
-
-

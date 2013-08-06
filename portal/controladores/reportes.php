@@ -38,7 +38,7 @@ class Reportes extends Controlador{
 		LEFT JOIN tiendas t ON t.clave = tkd.tienda
 		LEFT JOIN tick_int ti ON ti.clave = tkd.clave AND ti.tienda = tkd.tienda
 		LEFT JOIN vendedores v ON v.clave = ti.vendedor AND v.tienda = tkd.tienda
-		WHERE '.$filtroTienda.'  tkd.fechaventa >= "'.$fechai[2].'-'.$fechai[1].'-'.$fechai[0].' 00:00:00" and tkd.fechaventa <= "'.$fechaf[2].'-'.$fechaf[1].'-'.$fechaf[0].' 23:59:59" 
+		WHERE '.$filtroTienda.' ti.estatus=0 AND tkd.fechaventa >= "'.$fechai[2].'-'.$fechai[1].'-'.$fechai[0].' 00:00:00" and tkd.fechaventa <= "'.$fechaf[2].'-'.$fechaf[1].'-'.$fechaf[0].' 23:59:59" 
 		ORDER BY  t.tienda ASC ';
 				
 		// echo $sql; exit;
@@ -60,7 +60,7 @@ class Reportes extends Controlador{
 		LEFT JOIN tiendas t ON t.clave = tkd.tienda
 		LEFT JOIN tick_int ti ON ti.clave = tkd.clave AND ti.tienda = tkd.tienda
 		LEFT JOIN vendedores v ON v.clave = ti.vendedor AND v.tienda = tkd.tienda
-		WHERE '.$filtroTienda.' tkd.fechaventa >= "'.$fechai[2].'-'.$fechai[1].'-'.$fechai[0].' 00:00:00" and tkd.fechaventa <= "'.$fechaf[2].'-'.$fechaf[1].'-'.$fechaf[0].' 23:59:59" 
+		WHERE '.$filtroTienda.' ti.estatus=0 AND tkd.fechaventa >= "'.$fechai[2].'-'.$fechai[1].'-'.$fechai[0].' 00:00:00" and tkd.fechaventa <= "'.$fechaf[2].'-'.$fechaf[1].'-'.$fechaf[0].' 23:59:59" 
 		GROUP BY vendedor_tienda ORDER BY  t.tienda ASC LIMIT '.$start.', '.$limit;
 		
 		// echo $sql; exit;
@@ -89,31 +89,65 @@ class Reportes extends Controlador{
 		}
 		return $res;
 	}
+	
+	
+	function cortesJson(){
+		
+		
+		$tienda = intval($_POST['tienda']);
+		
+		$fechai = explode('/', $_POST['fechai']);
+		
+		$sql='SELECT * FROM CorteCaja WHERE fecha = "'.$fechai[2].'-'.$fechai[1].'-'.$fechai[0].'" AND tienda = '.$tienda.' and estatus=0';
+		
+		$mod=new Modelo();
+		$pdo=$mod->getPdo();
+		$sth = $pdo->query( $sql );
+				
+		if ( !$sth ) {
+			$res=$modelo->getError(  );
+			print_r( $res );
+			exit;
+		}
+		
+		$datos=$sth->fetchAll(PDO::FETCH_ASSOC);
+		if ( empty($datos) ){
+			$respuesta= array(
+				'success'=>false,
+				'msg'=>utf8_encode('No hay cortes para esta fecha en esta tienda')
+			);
+		}else if ( sizeof($datos) > 1){
+			$respuesta= array(
+				'success'=>false,
+				'msg'=>'Hay mas de un corte para esta tienda en esta fecha'
+			);
+		}else{
+			$respuesta= array(
+				'success'=>true,
+				'datos'=>$datos[0]
+			);
+		}
+		
+		
+		echo json_encode( $respuesta );
+	}
+	function cortes(){
+		$tiendaMod = new TiendaModelo();
+		$res  =$tiendaMod->buscar( array() );				
+		$vista=$this->getVista();
+		$vista->tiendas = $res['datos'];
+		
+		
+		$this->mostrarVista();
+	}
+	
 	function comisiones(){
 		$tiendaMod = new TiendaModelo();
 		$res  =$tiendaMod->buscar( array() );				
 		$vista=$this->getVista();
 		$vista->tiendas = $res['datos'];
 		
-		// ------------------
-		// $elMes=date('m');
-		// $dia=date('d');		
-		// $elAnio=date('Y');
 		
-		
-		 // $_REQUEST['paging']['fechai'] = $dia.'/'.$elMes.'/'.$elAnio; 
-		 // $_REQUEST['paging']['fechaf'] = $dia.'/'.$elMes.'/'.$elAnio; 
-		 // $_REQUEST['paging']['agrupar']='true';
-		 // $_REQUEST['paging']['tienda']='';
-		 // $_REQUEST['paging']['pageIndex']=1;
-		 // $_REQUEST['paging']['pageSize']=13;
-		// ------------------
-		
-		// $datos = $this->vendidosJson(false);
-		// $vista->datos = $datos['datos'];
-		// $vista->apartados = $datos['apartados'];
-		// $vista->vendidos = $datos['vendidos'];
-		// $vista->importe = $datos['importe'];
 		$this->mostrarVista();
 	}
 	

@@ -38,21 +38,7 @@
 				if (articulo!=''){				
 					data.data.paging.articulo=articulo;
 				}
-				// console.log("data.data"); console.log(data.data);
-				// data.data.paging.push(params);
-				// data.data.filtering.push({
-					// field: 'fecha',
-					// dataKey:'fecha_i',
-					// filterOperator:'greaterorequal',
-					// filterValue:$(me.tabId + ' [name="fecha_i"]').val()
-				// });
 				
-				// data.data.filtering.push({
-					// field: 'fecha',
-					// dataKey:'fecha_f',
-					// filterOperator:'lessorequal',
-					// filterValue:$(me.tabId + ' [name="fecha_f"]').val()
-				// });
 			}
 		});
 				
@@ -66,15 +52,15 @@
 			dataReader.read(datasource);
 		};	
 		var columnasAgrupadas=[
-                    { headerText: "Tienda",dataIndex:'nombreTienda', visible:false, groupInfo: { groupSingleRow: true, position:'header' }  },
-					{ headerText: "Mod.",dataIndex:'modelo',visible:true,width:90 },
-					{ headerText: "Clave",dataIndex:'clavesecundaria',visible:true },					
-					{ headerText: "Cant.",dataIndex:'cantidad',width:80,dataType: "number" },
-					{ headerText: "Descripcion",dataIndex:'descripcion',visible:true },										
-					{ headerText: "Importe",dataIndex:'importe', dataType: "currency" },
-					{ headerText: "apartado",dataIndex:'apartado', dataType: "currency" },
-					{ headerText: "ventas",dataIndex:'ventas', dataType: "currency" }					
-                ];
+			{ headerText: "Tienda",dataIndex:'nombreTienda', visible:false, groupInfo: { groupSingleRow: true, position:'header' }  },
+			{ headerText: "Mod.",dataIndex:'modelo',visible:true,width:90 },
+			{ headerText: "Clave",dataIndex:'clavesecundaria',visible:true },					
+			{ headerText: "Cant.",dataIndex:'cantidad',width:80,dataType: "number" },
+			{ headerText: "Descripcion",dataIndex:'descripcion',visible:true },										
+			{ headerText: "Importe",dataIndex:'importe', dataType: "currency" },
+			{ headerText: "apartado",dataIndex:'apartado', dataType: "currency" },
+			{ headerText: "ventas",dataIndex:'ventas', dataType: "currency" }					
+		];
 				
 		var columnasNoAgrupadas=[
                     { headerText: "Tienda",dataIndex:'nombreTienda'  },
