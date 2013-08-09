@@ -55,9 +55,9 @@
 		var columnasAgrupadas=[
 			{ headerText: "Tienda", dataIndex:'nombreTienda', visible:false, groupInfo: { groupSingleRow: true, position:'header' }  },
 			{ headerText: "Vendedor", dataIndex:'vendedor_nombre',visible:true },
-			{ headerText: "Importe",dataIndex:'importe' },
-			{ headerText: "Apartado",dataIndex:'apartado' },
-			{ headerText: "Ventas",dataIndex:'ventas' }
+			{ headerText: "Importe",dataIndex:'importe',dataType:'currency' },
+			{ headerText: "Apartado",dataIndex:'apartado',dataType:'currency' },
+			{ headerText: "Ventas",dataIndex:'ventas',dataType:'currency' }
 		];
 		
 		$(tabid + ' .tabla_reporte').wijgrid({
